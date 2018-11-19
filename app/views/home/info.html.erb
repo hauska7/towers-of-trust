@@ -1,0 +1,23 @@
+<section class="text-center">                                                                                                             
+  <div class="container">
+    <div>
+      Info |
+      <%= link_to "Main", root_path %>
+    </div>
+    <div>
+      <h3>Overview</h3>
+      <div><%= @message_main_short %></div>
+      <h4>Technical</h4>
+      <div><%= @message_main_technical %></div>
+      <h3>Meeting</h3>
+      <div><%= @message_intro %></div>
+      <ul class="list-group">
+        <% @message_points.each do |point| %>
+          <li class="list-group-item">
+            <%= point %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</section>

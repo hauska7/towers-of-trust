@@ -1,5 +1,9 @@
 version: '3'
 services:
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - "1080:1080"
   db:
     image: postgres
     volumes:
@@ -13,3 +17,6 @@ services:
       - "3000:3000"
     depends_on:
       - db
+    links:
+      - mailcatcher
+

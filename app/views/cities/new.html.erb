@@ -1,0 +1,36 @@
+<section class="text-center">                                                                                                             
+  <div class="container">
+    <div>
+      New City |
+      <%= link_to "Home", home_path %>
+      <%= link_to "Cities", cities_path %>
+    </div>
+
+  <form action="/cities" method="POST">
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
+    <% unless @city.errors.empty? %>
+      <ul class="list-group">
+        <% @city.errors.full_messages.each do |message| %>
+          <li class="list-group-item">
+            <%= "#{message}" %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+    
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" name="name" id="name"><%= @city.name %></input>
+    </div>
+    <div class="form-group">
+      <label for="state">State</label>
+      <input type="text" class="form-control" name="state" id="state"><%= @city.state %></input>
+    </div>
+    <div class="form-group">
+      <label for="country">Country</label>
+      <input type="text" class="form-control" name="country" id="country"><%= @city.country %>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+  </form>
+  </div>
+</section>

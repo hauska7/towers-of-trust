@@ -1,0 +1,16 @@
+<section class="text-center">                                                                                                             
+  <div class="container">
+    <div>
+      Home |
+      <%= link_to "Cities", cities_path %>
+      <%= link_to "Meetings", meetings_path %>
+      <%= link_to "Info", info_path %>
+      <%= link_to('Edit profile', edit_user_registration_path) %>
+      <form action="<%= destroy_user_session_path %>" method="POST">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
+        <input type="hidden" name="_method" value="delete" />
+        <button type="submit" class="btn btn-primary">Logout</button>
+      </form>
+    </div>
+  </div>
+</section>

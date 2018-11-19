@@ -1,0 +1,15 @@
+<section class="text-center">                                                                                                             
+  <div class="container">
+    <div>
+      Meetings |
+      <%= link_to "Home", home_path %>
+    </div>
+    <ul class="list-group">
+      <% @meetings.each do |meeting| %>
+        <li class="list-group-item">
+          <%= meeting.title_presentation %> <%= link_to "Show", meeting_path(meeting.id) %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</section>

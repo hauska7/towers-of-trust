@@ -1,0 +1,10 @@
+<section class="text-center">                                                                                                             
+  <div class="container">
+    Main Page |
+    <%= link_to "Info", info_path %>
+    <%= link_to('Login', new_user_session_path)  %>  
+    <%= link_to('Sign up', new_user_registration_path)  %>
+  </div>
+  <span><%= @message_main_short %></span>
+  <%= link_to "Info", info_path %>
+</section>
