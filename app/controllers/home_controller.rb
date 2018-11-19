@@ -9,9 +9,8 @@ class HomeController < ApplicationController
   end
 
   def home
-    #@new_meetings = Meeting.new_for_participant(participant: current_user)
-    #@next_meeting_scheduling = Meeting.last.created_at.to_date + 10
-    #@your_city
+    @meetings_that_didnt_happen = Meeting.didnt_happen_for_participant(participant_id: current_user.id)
+    @city = current_user.city
   end
 
   def info

@@ -10,6 +10,14 @@ class Meeting < ApplicationRecord
   has_many :participations
   has_many :users, through: :participations
 
+  def self.didnt_happen_for_participant(participant_id:)
+    joins(:participations).where(status: "didnt_happen").where(participations: { user_id: participant_id }).order(created_at: :desc)
+  end
+
+  def self.for_participant(participant_id:)
+    joins(:participations).where(participations: { user_id: participant_id }).order(created_at: :desc)
+  end
+
   def participants
     users
   end

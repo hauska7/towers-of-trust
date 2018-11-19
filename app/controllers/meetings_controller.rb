@@ -2,7 +2,7 @@ class MeetingsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @meetings = Meeting.joins(:participations).where(participations: { user_id: current_user.id }).order(created_at: :desc)
+    @meetings = Meeting.for_participant(participant_id: current_user.id)
   end
 
   def show

@@ -12,5 +12,27 @@
         <button type="submit" class="btn btn-primary">Logout</button>
       </form>
     </div>
+    <div>
+      <div>
+      <% if @city %>
+        <b>City:</b>
+        <%= @city.full_presentation %>
+      <% else %>
+        <b>Set your city!</b>
+        <%= link_to "Cities", cities_path %>
+      <% end %>
+      </div>
+     
+    <div>
+     <b>Active meetings:</b>
+      <ul class="list-group">
+        <% @meetings_that_didnt_happen.each do |meeting| %>
+          <li class="list-group-item">
+            <%= meeting.title_presentation %> <%= link_to "Show", meeting_path(meeting.id) %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+    </div>
   </div>
 </section>
