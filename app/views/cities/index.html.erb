@@ -1,9 +1,9 @@
 <section class="text-center">                                                                                                             
   <div class="container">
     <div>
-      Cities |
-      <%= link_to "Home", home_path %>
-      <%= link_to "Add City", new_city_path %>
+      <%= @page_name %> |
+      <%= link_to @home_link, home_path %>
+      <%= link_to @add_city, new_city_path %>
     </div>
 
     <ul class="list-group">
@@ -14,7 +14,7 @@
             <form action="<%= join_city_path(city.id) %>" method="POST">
               <%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
               <input type="hidden" name="_method" value="put" />
-              <button type="submit" class="btn btn-primary">Join</button>
+              <button type="submit" class="btn btn-primary"><%= @join %></button>
             </form>
           <% end %>
         </li>

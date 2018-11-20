@@ -1,34 +1,34 @@
 <section class="text-center">                                                                                                             
   <div class="container">
     <div>
-      Home |
-      <%= link_to "Cities", cities_path %>
-      <%= link_to "Meetings", meetings_path %>
-      <%= link_to "Info", info_path %>
-      <%= link_to('Edit profile', edit_user_registration_path) %>
+      <%= @home %> |
+      <%= link_to @cities_link, cities_path %>
+      <%= link_to @meetings_link, meetings_path %>
+      <%= link_to @info_link, info_path %>
+      <%= link_to(@edit_profile_link, edit_user_registration_path) %>
       <form action="<%= destroy_user_session_path %>" method="POST">
         <%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
         <input type="hidden" name="_method" value="delete" />
-        <button type="submit" class="btn btn-primary">Logout</button>
+        <button type="submit" class="btn btn-primary"><%= @logout_link %></button>
       </form>
     </div>
     <div>
       <div>
       <% if @city %>
-        <b>City:</b>
+        <b><%= @city_paragraph %></b>
         <%= @city.full_presentation %>
       <% else %>
-        <b>Set your city!</b>
-        <%= link_to "Cities", cities_path %>
+        <b><%= @set_your_city %></b>
+        <%= link_to @cities_link, cities_path %>
       <% end %>
       </div>
      
     <div>
-     <b>Active meetings:</b>
+     <b><%= @active_meetings_paragraph %></b>
       <ul class="list-group">
         <% @meetings_that_didnt_happen.each do |meeting| %>
           <li class="list-group-item">
-            <%= meeting.title_presentation %> <%= link_to "Show", meeting_path(meeting.id) %>
+            <%= meeting.title_presentation %> <%= link_to @show, meeting_path(meeting.id) %>
           </li>
         <% end %>
       </ul>

@@ -1,13 +1,13 @@
 <section class="text-center">                                                                                                             
   <div class="container">
     <div>
-      Meetings |
-      <%= link_to "Home", home_path %>
+      <%= @meetings_page %> |
+      <%= link_to @home_link, home_path %>
     </div>
     <ul class="list-group">
       <% @meetings.each do |meeting| %>
         <li class="list-group-item">
-          <%= meeting.title_presentation %> <%= link_to "Show", meeting_path(meeting.id) %>
+          <%= meeting.title_presentation %> <%= link_to @show, meeting_path(meeting.id) %>
         </li>
       <% end %>
     </ul>

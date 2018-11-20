@@ -3,11 +3,18 @@ class MeetingsController < ApplicationController
 
   def index
     @meetings = Meeting.for_participant(participant_id: current_user.id)
+    @meetings_page = I18n.t("meetings_page")
+    @home_link = I18n.t("home_link")
+    @show = I18n.t("show")
   end
 
   def show
     @meeting = Meeting.includes(participations: :user).find(params[:id])
     fail "Authorizarion" unless @meeting.participant?(current_user)
+    @meeting_page = I18n.t("meeting_page")
+    @home_link = I18n.t("home_link")
+    @meetings_link = I18n.t("meetings_link")
+    @set_meeting_has_happened = I18n.t("set_meeting_has_happened")
   end
 
   def happened

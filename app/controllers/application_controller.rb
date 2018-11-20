@@ -1,4 +1,7 @@
 class ApplicationController < ActionController::Base
+  # locale from headers TODO: set locale in user preferences
+  include HttpAcceptLanguage::AutoLocale
+
   # TODO:move this dirty hack to devise controller
   before_action :configure_permitted_parameters, if: :devise_controller?
 

@@ -23,7 +23,11 @@ class Meeting < ApplicationRecord
   end
 
   def title_presentation
-    "#{created_at.to_date} #{status}"
+    "#{created_at.to_date} #{present_status}"
+  end
+
+  def present_status
+    I18n.t("status_#{status}")
   end
 
   def participant?(user)

@@ -5,26 +5,44 @@ class HomeController < ApplicationController
   def index
     return redirect_to home_path if user_signed_in?
 
-    @message_main_short = "This is a community building website."
+    @message_main_short = I18n.t("message_main_short")
+    @main_page = I18n.t("main_page")
+    @info_link = I18n.t("info_link")
+    @login_link = I18n.t("login_link")
+    @sign_up_link = I18n.t("sign_up_link")
   end
 
   def home
     @meetings_that_didnt_happen = Meeting.didnt_happen_for_participant(participant_id: current_user.id)
     @city = current_user.city
+    @home = I18n.t("home")
+    @cities_link = I18n.t("cities_link")
+    @meetings_link = I18n.t("meetings_link")
+    @info_link = I18n.t("info_link")
+    @edit_profile_link = I18n.t("edit_profile_link")
+    @logout_link = I18n.t("logout_link")
+    @city_paragraph = I18n.t("city_paragraph")
+    @set_your_city = I18n.t("set_your_city")
+    @active_meetings_paragraph = I18n.t("active_meetings_paragraph")
+    @show = I18n.t("show")
   end
 
   def info
-    @message_main_short = "This is a community building website."
-    @message_main_technical = "Members are divided by cities within those they will have a " \
-      "disscusion based, in person, small group meetings with frequency about 10 days."
-    @message_intro = "There need to be some guidelines for what is considered a meeting as it needs to have certain quality threshold."
+    @message_main_short = I18n.t("message_main_short")
+    @message_main_technical = I18n.t("message_main_technical")
+    @message_intro = I18n.t("message_intro")
     @message_points = [
-      "The goal of a meeting is to develop and bond its participants.",
-      "All participants are present for all duration of meeting - 2hrs, so make time for it. Participants are chosen drawing from all community equally.",
-      "Participants are all in charge. Participants are active and present body and mind.",
-      "Participation in a meeting is a solo endevor. On ocasion guests are allowed.",
-      "Meeting is a quality discussion. Distractions to be avoided.",
-      "Meeting should be scheduled on first available date."
-    ]
+      "message_first_point",
+      "message_second_point",
+      "message_third_point",
+      "message_forth_point",
+      "message_fifth_point",
+      "message_sixth_point"
+    ].map { |key| I18n.t(key) }
+    @info_page = I18n.t("info_page")
+    @main_page = I18n.t("main_page")
+    @overview = I18n.t("overview")
+    @technical = I18n.t("technical")
+    @meeting = I18n.t("meeting")
   end
 end

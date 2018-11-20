@@ -1,15 +1,15 @@
 <section class="text-center">                                                                                                             
   <div class="container">
     <div>
-      Info |
-      <%= link_to "Main", root_path %>
+      <%= @info_page %> |
+      <%= link_to @main_page, root_path %>
     </div>
     <div>
-      <h3>Overview</h3>
+      <h3><%= @overview %></h3>
       <div><%= @message_main_short %></div>
-      <h4>Technical</h4>
+      <h4><%= @technical %></h4>
       <div><%= @message_main_technical %></div>
-      <h3>Meeting</h3>
+      <h3><%= @meeting %></h3>
       <div><%= @message_intro %></div>
       <ul class="list-group">
         <% @message_points.each do |point| %>
