@@ -14,6 +14,11 @@ namespace :meeting do
       users = User.active_and_in_city(city_id: city.id).to_a
       next if users.empty?
 
+      require 'pp'
+      puts "city: #{city}"
+      puts "users"
+      pp users
+
       users.shuffle!
 
       groups = []
@@ -25,10 +30,16 @@ namespace :meeting do
         groups.delete_at(-1)
       end
 
+      puts "groups:"
+      pp groups
+
       if groups.first.size == 1
         # no meeting is possible
       else
         groups.each do |group|
+          puts "group:"
+          pp group
+
           meeting = Meeting.build(users: group, city: city)
           meeting.save!
         end
