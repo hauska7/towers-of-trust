@@ -12,6 +12,8 @@ namespace :meeting do
   task :create => :environment do
     City.all.each do |city|
       users = User.active_and_in_city(city_id: city.id).to_a
+      next if users.empty?
+
       users.shuffle!
 
       groups = []
@@ -22,10 +24,6 @@ namespace :meeting do
         groups.first.concat(groups.last)
         groups.delete_at(-1)
       end
-
-      puts "groups:"
-      require 'pp'
-      pp groups
 
       if groups.first.size == 1
         # no meeting is possible
