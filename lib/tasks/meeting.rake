@@ -23,6 +23,10 @@ namespace :meeting do
         groups.delete_at(-1)
       end
 
+      puts "groups:"
+      require 'pp'
+      pp groups
+
       if groups.first.size == 1
         # no meeting is possible
       else
