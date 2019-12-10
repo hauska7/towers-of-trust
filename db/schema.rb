@@ -10,37 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_19_095410) do
+ActiveRecord::Schema.define(version: 2019_12_10_150358) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "cities", force: :cascade do |t|
-    t.string "name"
-    t.string "state"
-    t.string "country"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_cities_on_user_id"
-  end
-
-  create_table "meetings", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "city_id", null: false
-    t.string "status", null: false
-    t.index ["city_id"], name: "index_meetings_on_city_id"
-  end
-
-  create_table "participations", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "meeting_id", null: false
-    t.bigint "user_id", null: false
-    t.index ["meeting_id"], name: "index_participations_on_meeting_id"
-    t.index ["user_id"], name: "index_participations_on_user_id"
-  end
 
   create_table "users", force: :cascade do |t|
     t.string "full_name", null: false
@@ -53,17 +26,24 @@ ActiveRecord::Schema.define(version: 2018_11_19_095410) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
-    t.bigint "city_id"
     t.string "phone"
     t.datetime "deleted_at"
-    t.index ["city_id"], name: "index_users_on_city_id"
+    t.integer "votes_count", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "cities", "users"
-  add_foreign_key "meetings", "cities"
-  add_foreign_key "participations", "meetings"
-  add_foreign_key "participations", "users"
-  add_foreign_key "users", "cities"
+  create_table "votes", force: :cascade do |t|
+    t.string "status", null: false
+    t.datetime "expired_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "voter_id", null: false
+    t.bigint "person_id", null: false
+    t.index ["person_id"], name: "index_votes_on_person_id"
+    t.index ["voter_id"], name: "index_votes_on_voter_id"
+  end
+
+  add_foreign_key "votes", "users", column: "person_id"
+  add_foreign_key "votes", "users", column: "voter_id"
 end

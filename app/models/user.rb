@@ -3,27 +3,38 @@ class User < ApplicationRecord
   # :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable #, :confirmable
-  belongs_to :city, optional: true
-  has_many :cities, class_name: "City"
-  has_many :participations
-  has_many :meetings, through: :participations
 
   validates :full_name, presence: true
+  validates :votes_count, presence: true
 
-  def self.build(full_name:, password:, email:)
-    new(full_name: full_name, password: password, email: email)
+  def set_email(email)
+    self.email = email
+    self
   end
 
-  def self.active_and_in_city(city_id:)
-    where(deleted_at: nil).where(city_id: city_id)
+  def set_default_password
+    fail unless X.test?
+
+    self.password = "123456"
+    self
   end
 
-  def presentation_for_meeting
-    "#{full_name} #{email} #{phone}"
+  def set_name(name)
+    self.full_name = name
+    self
+  end
+
+  def set_votes_count(votes_count)
+    self.votes_count = votes_count
+    self
+  end
+
+  def name
+    full_name
   end
 
   def soft_delete  
-    self.deleted_at = Time.current
+    self.deleted_at = X.time_now
     save!
     self
   end  
@@ -32,7 +43,6 @@ class User < ApplicationRecord
     super && !deleted_at  
   end  
                     
-  # provide a custom message for a deleted account   
   def inactive_message   
     !deleted_at ? super : :deleted_account  
   end  

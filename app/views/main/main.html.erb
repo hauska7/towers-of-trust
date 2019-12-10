@@ -1,0 +1,14 @@
+<section class="text-center">                                                                                                             
+  <div class="container">
+    <div>
+      <div>
+        <% @users.each do |user| %>
+          <p>
+            <%= link_to user.name, X.path_for("show_user", { user: user }) %>
+            <%= user.votes_count %>
+          </p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>

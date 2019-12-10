@@ -4,10 +4,21 @@
     <title>Commie</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
   </head>
 
   <body>
+    <div>
+      <%= X.t("home") %> |
+      <%= link_to X.t("about"), X.path_for("about") %>
+      <%= link_to(X.t("login"), new_user_session_path)  %>  
+      <%= link_to(X.t("sign_up"), new_user_registration_path)  %>
+      <form action="<%= destroy_user_session_path %>" method="POST">
+        <%= hidden_field_tag :authenticity_token, X.form_authenticity_token(self) -%>
+        <input type="hidden" name="_method" value="delete" />
+        <button type="submit" class="btn btn-primary"><%= X.t("logut") %></button>
+      </form>
+    </div>
+
     <p class="notice"><%= notice %></p>
     <p class="alert"><%= alert %></p>
 

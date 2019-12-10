@@ -24,12 +24,12 @@ default: &default
 
 development:
   <<: *default
-  database: commie_development
+  url: postgres://docker:docker@localhost:54320/commie_development
 
 
 test:
   <<: *default
-  database: commie_test
+  url: postgres://docker:docker@localhost:54320/commie_test
 
 #default: &default
 #  adapter: postgresql

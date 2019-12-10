@@ -1,0 +1,22 @@
+<section class="text-center">                                                                                                             
+  <div class="container">
+    <div>
+      <div>
+        <p>
+          <%= @user.name %>
+          <%= @user.votes_count %>
+        </p>
+
+        <p>
+          <% if @view_manager.show?("vote_button")  %>
+            <form action="<%= X.path_for("do_vote_regular") %>" method="POST">
+              <%= hidden_field_tag :authenticity_token, X.form_authenticity_token(self) %>
+              <input type="hidden" name="user_id" value="<%= @user.id %>" />
+              <button type="submit" class="btn btn-primary"><%= X.t("do_vote") %></button>
+            </form>
+          <% end %>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

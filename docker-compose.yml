@@ -1,22 +1,16 @@
-version: '3'
-services:
-  mailcatcher:
-    image: schickling/mailcatcher
-    ports:
-      - "1080:1080"
-  db:
-    image: postgres
-    volumes:
-      - ./tmp/db:/var/lib/postgresql/data
-  web:
-    build: .
-    command: bundle exec rails s -p 3000 -b '0.0.0.0'
-    volumes:
-      - .:/commie
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
-    links:
-      - mailcatcher
-
+mailcatcher:
+  image: schickling/mailcatcher
+  ports:
+    - 1025:1025
+    - 1080:1080
+postgres:
+  image: postgres:9.6
+  ports:
+    - 54320:5432
+  environment:
+    - POSTGRES_USER=docker
+    - POSTGRES_PASSWORD=docker
+redis:
+  image: redis
+  ports:
+    - 63790:6379
