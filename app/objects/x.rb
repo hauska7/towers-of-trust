@@ -1,4 +1,8 @@
 class X
+  def self.app_name
+    t("klub_dyskusyjny")
+  end
+
   def self.time_now
     Time.current
   end
