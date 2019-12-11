@@ -2,44 +2,71 @@
   <div class="container">
     <div>
       <div>
-        <p>
-          <%= @user.name %>
-          <%= @user.votes_count %>
-        </p>
-
-        <p>
-          <% if @view_manager.show?("vote_button")  %>
-            <form action="<%= X.path_for("do_vote_regular") %>" method="POST">
-              <%= hidden_field_tag :authenticity_token, X.form_authenticity_token(self) %>
-              <input type="hidden" name="user_id" value="<%= @user.id %>" />
-              <button type="submit" class="btn btn-primary"><%= X.t("do_vote") %></button>
-            </form>
-          <% end %>
-        </p>
-
         <div>
-          <h3><%= X.t("current_vote") %></h3>
-          <% if @current_vote %>
-            <p>
-              <%= link_to @current_vote.person.name, X.path_for("show_user", { user: @current_vote.person }) %>
-              <%= @current_vote.person.votes_count %>
-              <% if @view_manager.show?("expire_my_vote_button") %>
-                <form action="<%= X.path_for("do_vote_take_back") %>" method="POST">
-                  <%= hidden_field_tag :authenticity_token, X.form_authenticity_token(self) %>
-                  <button type="submit" class="btn btn-primary"><%= X.t("expire_my_vote_button") %></button>
-                </form>
-              <% end %>
-            </p>
-          <% end %>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col"><%= X.t("name") %></th>
+                <th><%= X.t("votes_count") %></th>
+                <th><%= X.t("current_vote") %></th>
+                <th><%= X.t("action") %></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <%= link_to @user.name, X.path_for("show_user", { user: @user }) %>
+                </td>
+                <td>
+                  <%= @user.votes_count %>
+                </td>
+                <td>
+                  <% if @current_vote %>
+                    <%= link_to @current_vote.person.name, X.path_for("show_user", { user: @current_vote.person }) %>
+                  <% end %>
+                </td>
+                <td>
+                  <% if @view_manager.show?("vote_button")  %>
+                    <form action="<%= X.path_for("do_vote_regular") %>" method="POST">
+                      <%= hidden_field_tag :authenticity_token, X.form_authenticity_token(self) %>
+                      <input type="hidden" name="user_id" value="<%= @user.id %>" />
+                      <button type="submit" class="btn btn-primary"><%= X.t("do_vote") %></button>
+                    </form>
+                  <% end %>
+                  <% if @view_manager.show?("expire_my_vote_button") %>
+                    <form action="<%= X.path_for("do_vote_take_back") %>" method="POST">
+                      <%= hidden_field_tag :authenticity_token, X.form_authenticity_token(self) %>
+                      <button type="submit" class="btn btn-primary"><%= X.t("expire_my_vote_button") %></button>
+                    </form>
+                  <% end %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+
         <div>
           <h3><%= X.t("has_votes") %></h3>
-          <% @votes_on.each do |vote| %>
-            <p>
-              <%= link_to vote.voter.name, X.path_for("show_user", { user: vote.voter }) %>
-              <%= vote.voter.votes_count %>
-            </p>
-          <% end %>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col"><%= X.t("name") %></th>
+                <th><%= X.t("votes_count") %></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @votes_on.each do |vote| %>
+                <tr>
+                  <td>
+                    <%= link_to vote.voter.name, X.path_for("show_user", { user: vote.voter }) %>
+                  </td>
+                  <td>
+                    <%= vote.voter.votes_count %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

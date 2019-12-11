@@ -30,14 +30,20 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  klub_dyskusyjny: "klub dyskusyjny"
   about: "About"
   login: "Login"
-  login_as_new_user: "Quick Login"
+  login_as_new_user: "New user"
+  quick_login: "Quick login"
   logout: "Logout"
   sign_up: "Sign Up"
   do_vote: "Vote"
   current_vote: "Current vote"
   has_votes: "Has these votes"
-  expire_my_vote_button: "Expire"
-  klub_dyskusyjny: "klub dyskusyjny"
+  expire_my_vote_button: "Expire my vote"
+  user: "User"
+  users: "Users"
+  name: "Name"
+  votes_count: "Votes count"
+  action: "Action"
 

@@ -29,133 +29,58 @@
 
   <body>
 
-    <div>
-      <%= link_to X.t("home"), X.path_for("root") %>
-      <%= link_to X.t("about"), X.path_for("about") %>
-      <% if X.layout_view_manager.show?("login_as_new_user") %>
-        <%= link_to(X.t("login_as_new_user"), X.path_for("do_login_as_new_user"))  %>  
-      <% end %>
-      <% unless current_user %>
-        <%= link_to(X.t("login"), new_user_session_path)  %>  
-        <%= link_to(X.t("sign_up"), new_user_registration_path)  %>
-      <% end %>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="<%= X.path_for('root') %>"><%= X.app_name %></a>
       <% if current_user %>
-        <%= link_to current_user.name, X.path_for("show_user", { user: current_user }) %>
-        <form action="<%= destroy_user_session_path %>" method="POST">
-          <%= hidden_field_tag :authenticity_token, X.form_authenticity_token(self) -%>
-          <input type="hidden" name="_method" value="delete" />
-          <button type="submit" class="btn btn-primary"><%= X.t("logout") %></button>
-        </form>
+        <a class="navbar-brand" href="<%= X.path_for('show_user', { user: current_user}) %>"><%= X.t("home") %></a>
       <% end %>
-    </div>
 
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-  <a class="navbar-brand" href="<%= X.path_for('root') %>"><%= X.app_name %></a>
-  <% if current_user %>
-    <a class="navbar-brand" href="<%= X.path_for('show_user', { user: current_user}) %>"><%= X.t("home") %></a>
-  <% end %>
-  <% if X.layout_view_manager.show?("login_as_new_user") %>
-    <a class="navbar-brand" href="<%= X.path_for('do_login_as_new_user') %>"><%= X.t("login_as_new_user") %></a>
-  <% end %>
-
-<div class="collapse navbar-collapse" id="navbarsExampleDefault">
-  <ul class="navbar-nav ml-auto">
-<% if X.ui.show_quick_login? %>
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle"
-         href="#"
-         id="dropdown01"
-         data-toggle="dropdown"
-         aria-haspopup="true"
-         aria-expanded="false">
-        Quick Login
-      </a>
-      <div class="dropdown-menu" aria-labelledby="dropdown01">
-        <a class="dropdown-item" href="<%= X.path_for('do_login_as_new_user') %>">As new user</a>
-          <% User.users_for_quick_login.each do |user| %>
-            <a class="dropdown-item" href="<%= X.path_for('do_login_as_existing_user', user) %>"><%= user.name %></a>
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav ml-auto">
+          <a class="navbar-brand" href="<%= X.path_for('about') %>"><%= X.t("about") %></a>
+          <% unless current_user %>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle"
+                 href="#"
+                 id="dropdown01"
+                 data-toggle="dropdown"
+                 aria-haspopup="true"
+                 aria-expanded="false">
+                <%= X.t("quick_login") %>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="dropdown01">
+                <a class="dropdown-item" href="<%= X.path_for('do_login_as_new_user') %>"><%= X.t("login_as_new_user") %></a>
+              </div>
+            </li>
           <% end %>
-          <a class="dropdown-item" href="<%= X.path_for('show_users') %>">Advanced</a>
-      </div>
-    </li>
-        <% end %>
 
-  <% if X.ui.show_modes? %>
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle"
-         href="#"
-         id="dropdown01"
-         data-toggle="dropdown"
-         aria-haspopup="true"
-         aria-expanded="false">
-        <%= X.current_user.role.presenter %>
-      </a>
-      <div class="dropdown-menu" aria-labelledby="dropdown01">
-        <% X.current_user.other_possible_roles_ordered.each do |role| %>
-          <a class="dropdown-item" href="<%= X.path_for('do_user_take_role', role) %>">
-            <%= role.presenter %>
-          </a>
-        <% end %>
+          <% if current_user %>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle"
+                 href="#"
+                 id="dropdown01"
+                 data-toggle="dropdown"
+                 aria-haspopup="true"
+                 aria-expanded="false">
+                <%= current_user.name %>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="dropdown01">
+                <a class="dropdown-item" href="<%= X.path_for('do_logout') %>">
+                  <%= X.t("logout") %>
+                </a>
+              </div>
+            </li>
+          <% else %>
+            <li class="nav-item">
+              <a class="nav-link" href="<%= X.path_for('new_registration') %>"><%= X.t("sign_up") %></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="<%= X.path_for('new_login') %>"><%= X.t("login") %></a>
+            </li>
+          <% end %>
+        </ul>
       </div>
-    </li>
-<% end %>
-
-        <% if X.logged_in? %>
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle"
-         href="#"
-         id="dropdown01"
-         data-toggle="dropdown"
-         aria-haspopup="true"
-         aria-expanded="false">
-        <%= X.current_user.name %>
-      </a>
-      <div class="dropdown-menu" aria-labelledby="dropdown01">
-        <a class="dropdown-item" href="<%= X.path_for('edit_registration') %>">
-          Edit Profile
-        </a>
-        <% if X.ui.show_developer_api_docs_link? %>
-          <a class="dropdown-item" href="<%= X.path_for('public_show_api_docs') %>">
-            Api Docs
-          </a>
-        <% end %>
-        <a class="dropdown-item" href="<%= X.path_for('do_log_out') %>">
-          Logout
-        </a>
-      </div>
-    </li>
-        <% else %>
-    <li class="nav-item">
-      <a class="nav-link" href="<%= X.path_for('new_registration') %>">Register</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="<%= X.path_for('new_login') %>">Login</a>
-    </li>
-        <% end %>
-  </ul>
-</div>
-</nav>
-
-    <div>
-      <%= link_to X.t("klub_dyskusyjny"), X.path_for("root") %>
-      <%= link_to X.t("home"), X.path_for("root") %>
-      <%= link_to X.t("about"), X.path_for("about") %>
-      <% if X.layout_view_manager.show?("login_as_new_user") %>
-        <%= link_to(X.t("login_as_new_user"), X.path_for("do_login_as_new_user"))  %>  
-      <% end %>
-      <% unless current_user %>
-        <%= link_to(X.t("login"), new_user_session_path)  %>  
-        <%= link_to(X.t("sign_up"), new_user_registration_path)  %>
-      <% end %>
-      <% if current_user %>
-        <%= link_to current_user.name, X.path_for("show_user", { user: current_user }) %>
-        <form action="<%= destroy_user_session_path %>" method="POST">
-          <%= hidden_field_tag :authenticity_token, X.form_authenticity_token(self) -%>
-          <input type="hidden" name="_method" value="delete" />
-          <button type="submit" class="btn btn-primary"><%= X.t("logout") %></button>
-        </form>
-      <% end %>
-    </div>
+    </nav>
 
     <p class="notice"><%= notice %></p>
     <p class="alert"><%= alert %></p>

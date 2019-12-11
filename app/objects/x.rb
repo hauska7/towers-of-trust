@@ -42,7 +42,11 @@ class X
   end
 
   def self.rails_url_for(options)
-    Rails.application.routes.url_helpers.url_for(options)
+    url_helpers.url_for(options)
+  end
+
+  def self.url_helpers
+    Rails.application.routes.url_helpers
   end
 
   def self.path_for(key, a = nil)

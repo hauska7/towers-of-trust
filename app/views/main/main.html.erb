@@ -2,12 +2,28 @@
   <div class="container">
     <div>
       <div>
-        <% @users.each do |user| %>
-          <p>
-            <%= link_to user.name, X.path_for("show_user", { user: user }) %>
-            <%= user.votes_count %>
-          </p>
-        <% end %>
+        <div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col"><%= X.t("name") %></th>
+                <th><%= X.t("votes_count") %></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @users.each do |user| %>
+                <tr>
+                  <td>
+                    <%= link_to user.name, X.path_for("show_user", { user: user }) %>
+                  </td>
+                  <td>
+                    <%= user.votes_count %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
