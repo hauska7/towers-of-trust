@@ -7,6 +7,10 @@ class User < ApplicationRecord
   validates :full_name, presence: true
   validates :votes_count, presence: true
 
+  def current_vote
+    X.queries.current_vote_of(self)
+  end
+
   def set_email(email)
     self.email = email
     self
@@ -24,8 +28,18 @@ class User < ApplicationRecord
     self
   end
 
+  def start_votes_count
+    set_votes_count(0)
+    self
+  end
+
   def set_votes_count(votes_count)
     self.votes_count = votes_count
+    self
+  end
+
+  def add_votes_count(number)
+    self.votes_count = votes_count + number
     self
   end
 

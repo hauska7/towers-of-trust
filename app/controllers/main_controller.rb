@@ -16,40 +16,46 @@ class MainController < ApplicationController
 
   def do_vote
     mode = params["mode"]
-
+    
     case mode
     when "regular"
       X.transaction do
         user = X.queries.find_user(params["user_id"])
-        #if X.queries.people_behind(current_user).include?(user)
         if X.queries.supports?(current_user, user)
-          user_current_vote = X.queries.current_vote_for(current_user)
-          if user_current_vote
-            person = user_current_vote.person
-            person.votes_count - user.votes_count
-            person.save!
-            user_current_vote.pull
-            user_current_vote.save!
-          end
+          user_current_vote = user.current_vote
+          user_current_vote.make_old
+          user_current_vote.expire_now
+          user_current_vote.save!
         end
-        old_vote = X.queries.current_vote_for(current_user)
-        old_vote.make_old if old_vote
-        old_vote.save!
-        vote = X.factory.build("new_vote")
+        current_vote = current_user.current_vote
+        if current_vote
+          current_vote.make_old
+          current_vote.expire_now
+          current_vote.save!
+        end
+        vote = X.factory.build("active_vote")
         vote.person = user
         vote.voter = current_user
-        vote.reason = params["reason"]
+        vote.set_reason(params["reason"])
         vote.save!
-        user.votes_count + current_user.votes_count
-        user.save!
       end
     when "take_back"
-      # todo
-      fail
+      current_vote = current_user.current_vote
+      if current_vote
+        current_vote.make_old
+        current_vote.expire_now
+        current_vote.save!
+      end
     else fail
     end
 
-    redirect_to X.path_for("show_user", current_user)
+    X.queries.all_users.each do |user|
+      votes_count = X.queries.count_votes(user)
+      user.votes_count = votes_count
+      user.save!
+    end
+
+    redirect_to X.path_for("show_user", { user: current_user })
   end
 
   def about

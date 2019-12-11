@@ -15,6 +15,10 @@ class X
     Factory.new
   end
 
+  def self.fixture
+    Fixture.new
+  end
+
   def self.t(key)
     translations.get(key)
   end
@@ -39,5 +43,14 @@ class X
 
   def self.test?
     Rails.env.test?
+  end
+
+  def self.log(object)
+    puts object
+  end
+
+  def self.transaction(&block)
+    ActiveRecord::Base.transaction(&block)
+    self
   end
 end

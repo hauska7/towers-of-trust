@@ -7,8 +7,20 @@ class Queries
     User.all.to_a
   end
 
-  def votes_on(user)
-    Vote.active.with_persons(user).to_a
+  def all_users
+    User.all.to_a
+  end
+
+  def count_votes(user)
+    people_behind(user).size
+  end
+
+  def votes_on(users)
+    Vote.active.with_persons(users).to_a
+  end
+
+  def current_vote_of(user)
+    Vote.active.with_voters(user).first
   end
 
   def all_votes_of(user)
@@ -16,17 +28,17 @@ class Queries
   end
 
   def people_behind(user)
-    #votes_on(user).each do |vote|
+    result = []
+    tmp = [user]
+    while tmp.present?
+      tmp = votes_on(tmp).map { |vote| vote.voter }
+      tmp.select! { |user| !result.include?(user) }
+      result.concat tmp
+    end
+    result
+  end
 
-    #end
-    #votes = votes_on(user)
-    #childs_to_return = []
-    #while childs_to_visit.present?
-    #  current_node = childs_to_visit.shift
-    #  childs_to_return << current_node
-    #  childs_to_visit.concat(current_node.children)
-    #end
-    #childs_to_return
-    fail
+  def supports?(whom, who)
+    people_behind(whom).include?(who)
   end
 end
