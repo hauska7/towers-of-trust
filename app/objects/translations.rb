@@ -2,7 +2,7 @@ class Translations
   def get(key)
     case key
     when "home"
-      "Home!"
+      "Home"
     else
       I18n.t key
     end

@@ -19,6 +19,16 @@ class X
     Fixture.new
   end
 
+  def self.dev_service
+    DevService.new
+  end
+
+  def self.layout_view_manager
+    result = factory.build("view_manager")
+    result.set_login_as_new_user(true)
+    result
+  end
+
   def self.t(key)
     translations.get(key)
   end
@@ -45,6 +55,10 @@ class X
     Rails.env.test?
   end
 
+  def self.nice_env?
+    Rails.env.test? || Rails.env.development?
+  end
+
   def self.log(object)
     puts object
   end
@@ -52,5 +66,25 @@ class X
   def self.transaction(&block)
     ActiveRecord::Base.transaction(&block)
     self
+  end
+
+  def self.random_email
+    "random#{rand(1000)}@email.com"
+  end
+
+  def self.default_password
+    "123456"
+  end
+
+  def self.name_from_email(email)
+    email.split("@").first
+  end
+
+  def self.guard(what)
+    case what
+    when "dev_helper"
+      fail unless nice_env?
+    else fail
+    end
   end
 end

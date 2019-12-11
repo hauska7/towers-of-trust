@@ -4,7 +4,7 @@ class Queries
   end
 
   def all_users_ordered_by_votes
-    User.all.to_a
+    User.all.order_by_votes_count.to_a
   end
 
   def all_users

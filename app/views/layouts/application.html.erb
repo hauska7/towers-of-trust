@@ -1,22 +1,31 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Commie</title>
+    <title><%= X.t("klub_dyskusyjny") %></title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
   </head>
 
   <body>
     <div>
-      <%= X.t("home") %> |
+      <%= link_to X.t("klub_dyskusyjny"), X.path_for("root") %>
+      <%= link_to X.t("home"), X.path_for("root") %>
       <%= link_to X.t("about"), X.path_for("about") %>
-      <%= link_to(X.t("login"), new_user_session_path)  %>  
-      <%= link_to(X.t("sign_up"), new_user_registration_path)  %>
-      <form action="<%= destroy_user_session_path %>" method="POST">
-        <%= hidden_field_tag :authenticity_token, X.form_authenticity_token(self) -%>
-        <input type="hidden" name="_method" value="delete" />
-        <button type="submit" class="btn btn-primary"><%= X.t("logut") %></button>
-      </form>
+      <% if X.layout_view_manager.show?("login_as_new_user") %>
+        <%= link_to(X.t("login_as_new_user"), X.path_for("do_login_as_new_user"))  %>  
+      <% end %>
+      <% unless current_user %>
+        <%= link_to(X.t("login"), new_user_session_path)  %>  
+        <%= link_to(X.t("sign_up"), new_user_registration_path)  %>
+      <% end %>
+      <% if current_user %>
+        <%= link_to current_user.name, X.path_for("show_user", { user: current_user }) %>
+        <form action="<%= destroy_user_session_path %>" method="POST">
+          <%= hidden_field_tag :authenticity_token, X.form_authenticity_token(self) -%>
+          <input type="hidden" name="_method" value="delete" />
+          <button type="submit" class="btn btn-primary"><%= X.t("logout") %></button>
+        </form>
+      <% end %>
     </div>
 
     <p class="notice"><%= notice %></p>

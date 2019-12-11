@@ -7,8 +7,15 @@ class User < ApplicationRecord
   validates :full_name, presence: true
   validates :votes_count, presence: true
 
+  scope :order_by_votes_count, -> { order(votes_count: :desc) }
+
   def current_vote
     X.queries.current_vote_of(self)
+  end
+
+  def dev_init
+    X.dev_service.init(self)
+    self
   end
 
   def set_email(email)
@@ -16,15 +23,13 @@ class User < ApplicationRecord
     self
   end
 
-  def set_default_password
-    fail unless X.test?
-
-    self.password = "123456"
+  def set_name(name)
+    self.full_name = name
     self
   end
 
-  def set_name(name)
-    self.full_name = name
+  def set_password(password)
+    self.password = password
     self
   end
 
@@ -35,11 +40,6 @@ class User < ApplicationRecord
 
   def set_votes_count(votes_count)
     self.votes_count = votes_count
-    self
-  end
-
-  def add_votes_count(number)
-    self.votes_count = votes_count + number
     self
   end
 

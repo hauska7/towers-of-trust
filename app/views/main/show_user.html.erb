@@ -16,6 +16,31 @@
             </form>
           <% end %>
         </p>
+
+        <div>
+          <h3><%= X.t("current_vote") %></h3>
+          <% if @current_vote %>
+            <p>
+              <%= link_to @current_vote.person.name, X.path_for("show_user", { user: @current_vote.person }) %>
+              <%= @current_vote.person.votes_count %>
+              <% if @view_manager.show?("expire_my_vote_button") %>
+                <form action="<%= X.path_for("do_vote_take_back") %>" method="POST">
+                  <%= hidden_field_tag :authenticity_token, X.form_authenticity_token(self) %>
+                  <button type="submit" class="btn btn-primary"><%= X.t("expire_my_vote_button") %></button>
+                </form>
+              <% end %>
+            </p>
+          <% end %>
+        </div>
+        <div>
+          <h3><%= X.t("has_votes") %></h3>
+          <% @votes_on.each do |vote| %>
+            <p>
+              <%= link_to vote.voter.name, X.path_for("show_user", { user: vote.voter }) %>
+              <%= vote.voter.votes_count %>
+            </p>
+          <% end %>
+        </div>
       </div>
     </div>
   </div>

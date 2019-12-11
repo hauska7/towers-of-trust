@@ -1,5 +1,4 @@
 class MainController < ApplicationController
-  before_action :authenticate_user!, except: [:main, :about, :show_user]
 
   def main
     @users = X.queries.all_users_ordered_by_votes
@@ -9,14 +8,27 @@ class MainController < ApplicationController
     @user = X.queries.find_user(params["user_id"])
     @votes_on = X.queries.votes_on(@user)
     @votes_of = X.queries.all_votes_of(@user)
+    @current_vote = @user.current_vote
     @view_manager = X.factory.build("view_manager")
-    @view_manager.set_vote_button(X.logged_in?(self))
+    if X.logged_in?(self)
+      vote_button = true
+      expire_my_vote_button = (current_user == @user) && !!@current_vote
+    else
+      vote_button = false
+      expire_my_vote_button = false
+    end
+    @view_manager.set_vote_button(vote_button)
+    @view_manager.set_expire_my_vote_button(expire_my_vote_button)
     @view_manager.valid
   end
 
   def do_vote
+    authenticate_user!
+
     mode = params["mode"]
     
+    user = nil
+
     case mode
     when "regular"
       X.transaction do
@@ -49,13 +61,31 @@ class MainController < ApplicationController
     else fail
     end
 
-    X.queries.all_users.each do |user|
-      votes_count = X.queries.count_votes(user)
-      user.votes_count = votes_count
-      user.save!
+    X.queries.all_users.each do |u|
+      votes_count = X.queries.count_votes(u)
+      u.votes_count = votes_count
+      u.save!
     end
 
-    redirect_to X.path_for("show_user", { user: current_user })
+    redirect_to X.path_for("show_user", { user: user || current_user })
+  end
+
+  def do_dev_helper
+    X.guard("dev_helper")
+
+    mode = params["mode"]
+
+    case mode
+    when "login_as_new_user"
+      user = X.factory.build("user")
+      user.dev_init
+      user.save!
+
+      sign_in user
+
+      redirect_to X.path_for("root")
+    else fail
+    end
   end
 
   def about
