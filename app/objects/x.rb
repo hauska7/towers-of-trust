@@ -45,6 +45,19 @@ class X
     url_helpers.url_for(options)
   end
 
+  def self.rails_translate(key)
+    I18n.t key
+  end
+
+  def self.available_locales
+    I18n.available_locales
+  end
+
+  def self.set_request_locale(locale)
+    I18n.locale = locale
+    self
+  end
+
   def self.url_helpers
     Rails.application.routes.url_helpers
   end

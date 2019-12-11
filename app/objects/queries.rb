@@ -15,16 +15,28 @@ class Queries
     people_behind(user).size
   end
 
-  def votes_on(users)
-    Vote.active.with_persons(users).to_a
+  def votes_on(users, order = nil)
+    case order
+    when nil
+      Vote.active.with_persons(users).includes_all.to_a
+    when "order_by_creation"
+      Vote.active.with_persons(users).includes_all.order(created_at: :desc).to_a
+    else fail
+    end
   end
 
   def current_vote_of(user)
     Vote.active.with_voters(user).first
   end
 
-  def all_votes_of(user)
-    Vote.with_voters(user).to_a
+  def all_votes_of(user, order = nil)
+    case order
+    when nil
+      Vote.with_voters(user).includes_all.to_a
+    when "order_by_creation"
+      Vote.with_voters(user).includes_all.order(created_at: :desc).to_a
+    else fail
+    end
   end
 
   def people_behind(user)

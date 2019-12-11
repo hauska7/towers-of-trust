@@ -6,8 +6,8 @@ class MainController < ApplicationController
 
   def show_user
     @user = X.queries.find_user(params["user_id"])
-    @votes_on = X.queries.votes_on(@user)
-    @votes_of = X.queries.all_votes_of(@user)
+    @votes_on = X.queries.votes_on(@user, "order_by_creation")
+    @votes_of = X.queries.all_votes_of(@user, "order_by_creation")
     @current_vote = @user.current_vote
     @view_manager = X.factory.build("view_manager")
     if X.logged_in?(self)

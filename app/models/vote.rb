@@ -5,6 +5,7 @@ class Vote < ApplicationRecord
   scope :active, -> { where(status: "active") }
   scope :with_persons, ->(persons) { where(person: persons) }
   scope :with_voters, ->(voters) { where(voter: voters) }
+  scope :includes_all, ->() { includes(:voter, :person) }
 
   validates :status, presence: true
 
@@ -31,7 +32,11 @@ class Vote < ApplicationRecord
     self
   end
 
-  def set_detached
-    self
+  def present_status
+    status
+  end
+
+  def present_created_at
+    created_at
   end
 end

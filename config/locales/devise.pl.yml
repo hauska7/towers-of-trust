@@ -1,0 +1,35 @@
+#wersja @sickill dostosowana przez @grzesiub do Devise 1.0.8 dla Rails 2.3
+pl:
+  devise:
+    sessions:
+      link: 'Zaloguj'
+      signed_in: 'Użytkownik został zalogowany.'
+      signed_out: 'Użytkownik został wylogowany.'
+      unauthenticated: 'Musisz się zalogować lub zarejestrować aby kontynuować.'
+      unconfirmed: 'Musisz najpierw aktywować swoje konto aby kontynuować.'
+      locked: 'Twoje konto jest zablokowane.'
+      invalid: 'Niepoprawny email lub hasło.'
+      invalid_token: 'Niepoprawny token autentykujący.'
+      timeout: 'Twoja sesja wygasła, zaloguj się ponownie aby kontynuować.'
+      inactive: 'Twoje konto nie zostało jeszcze aktywowane.'
+    passwords:
+      link: 'Zapomniałeś hasła?'
+      send_instructions: 'Wkrótce powinieneś otrzymać email z instrukcją jak ustawić nowe hasło.'
+      updated: 'Twoje hasło zostało zmienione. Jesteś już zalogowany.'
+    confirmations:
+      link: "Nie otrzymałeś instrukcji aktywacji?"
+      send_instructions: 'Wkrótce powinieneś otrzymać email z instrukcją jak aktywować swoje konto.'
+      confirmed: 'Twoje konto zostało aktywowane. Jesteś już zalogowany.'
+    registrations:
+      link: 'Rejestruj'
+      signed_up: 'Rejestracja zakończyła się sukcesem. Link aktywacyjny został wysłany na twój adres e-mail (jeśli włączone).'
+      updated: 'Twoje konto zostało pomyślnie zaktualizowane.'
+      destroyed: 'Papa! Twoje konto zostało usunięte. Mamy nadzieję, że spotkamy się jeszcze kiedyś!'
+    unlocks:
+      link: "Nie otrzymałeś instrukcji odblokowania konta?"
+      send_instructions: 'Wkrótce powinieneś otrzymać email z instrukcją jak odblokować swoje konto.'
+      unlocked: 'Twoje konto zostało odblokowane. Jesteś już zalogowany.'
+    mailer:
+      confirmation_instructions: 'Instrukcja aktywacji konta'
+      reset_password_instructions: 'Instrukcja ustawienia nowego hasła'
+      unlock_instructions: 'Instrukcja odblokowania konta'
