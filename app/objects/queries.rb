@@ -1,14 +1,14 @@
 class Queries
   def find_user(user_id)
-    User.find(user_id)
+    User.valid.find(user_id)
   end
 
   def all_users_ordered_by_votes
-    User.all.order_by_votes_count.to_a
+    User.all.valid.order_by_votes_count.to_a
   end
 
   def all_users
-    User.all.to_a
+    User.valid.all.to_a
   end
 
   def count_votes(user)
@@ -32,9 +32,9 @@ class Queries
   def all_votes_of(user, order = nil)
     case order
     when nil
-      Vote.with_voters(user).includes_all.to_a
+      Vote.valid.with_voters(user).includes_all.to_a
     when "order_by_creation"
-      Vote.with_voters(user).includes_all.order(created_at: :desc).to_a
+      Vote.valid.with_voters(user).includes_all.order(created_at: :desc).to_a
     else fail
     end
   end

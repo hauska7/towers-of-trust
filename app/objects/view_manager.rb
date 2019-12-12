@@ -1,6 +1,6 @@
 class ViewManager
-  def set_login_as_new_user(flag)
-    @login_as_new_user = flag
+  def discover_dev_helpers
+    @dev_helpers = X.nice_env?
     self
   end
 
@@ -24,8 +24,8 @@ class ViewManager
       @vote_button
     when "expire_my_vote_button"
       @expire_my_vote_button
-    when "login_as_new_user"
-      @login_as_new_user
+    when "quick_login"
+      @dev_helpers
     else fail
     end
   end

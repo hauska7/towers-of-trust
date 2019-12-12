@@ -27,10 +27,8 @@ class X
     DevService.new
   end
 
-  def self.layout_view_manager
-    result = factory.build("view_manager")
-    result.set_login_as_new_user(true)
-    result
+  def self.services
+    Services.new
   end
 
   def self.t(key)

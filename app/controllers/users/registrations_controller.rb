@@ -3,7 +3,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def create
     build_resource(sign_up_params)
 
-    resource.start_votes_count
+    user = resource
+    user.set_active_status
+    user.start_votes_count
 
     resource.save
     yield resource if block_given?
@@ -22,11 +24,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
       set_minimum_password_length
       respond_with resource
     end
-
   end
+
   # DELETE /resource
   def destroy
-    fail
+    user = resource
+    X.services.delete_account(user)
+
     Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
     set_flash_message :notice, :destroyed
     yield resource if block_given?

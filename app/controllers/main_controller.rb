@@ -1,5 +1,4 @@
 class MainController < ApplicationController
-
   def main
     @users = X.queries.all_users_ordered_by_votes
   end
@@ -9,7 +8,6 @@ class MainController < ApplicationController
     @votes_on = X.queries.votes_on(@user, "order_by_creation")
     @votes_of = X.queries.all_votes_of(@user, "order_by_creation")
     @current_vote = @user.current_vote
-    @view_manager = X.factory.build("view_manager")
     if X.logged_in?(self)
       vote_button = true
       expire_my_vote_button = (current_user == @user) && !!@current_vote
@@ -35,13 +33,13 @@ class MainController < ApplicationController
         user = X.queries.find_user(params["user_id"])
         if X.queries.supports?(current_user, user)
           user_current_vote = user.current_vote
-          user_current_vote.make_old
+          user_current_vote.set_status_old
           user_current_vote.expire_now
           user_current_vote.save!
         end
         current_vote = current_user.current_vote
         if current_vote
-          current_vote.make_old
+          current_vote.set_status_old
           current_vote.expire_now
           current_vote.save!
         end
@@ -54,18 +52,14 @@ class MainController < ApplicationController
     when "take_back"
       current_vote = current_user.current_vote
       if current_vote
-        current_vote.make_old
+        current_vote.set_status_old
         current_vote.expire_now
         current_vote.save!
       end
     else fail
     end
 
-    X.queries.all_users.each do |u|
-      votes_count = X.queries.count_votes(u)
-      u.votes_count = votes_count
-      u.save!
-    end
+    X.services.recount_votes
 
     redirect_to X.path_for("show_user", { user: user || current_user })
   end
@@ -84,6 +78,12 @@ class MainController < ApplicationController
       sign_in user
 
       redirect_to X.path_for("root")
+    when "login_as_existing_user"
+      user = X.queries.find_user(params["user_id"])
+
+      sign_in user
+
+      redirect_to X.path_for("show_user", { user: user })
     else fail
     end
   end

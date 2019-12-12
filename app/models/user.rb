@@ -5,9 +5,11 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable #, :confirmable
 
   validates :full_name, presence: true
+  validates :status, presence: true
   validates :votes_count, presence: true
 
   scope :order_by_votes_count, -> { order(votes_count: :desc) }
+  scope :valid, -> { where.not(status: "deleted") }
 
   def current_vote
     X.queries.current_vote_of(self)
@@ -47,17 +49,39 @@ class User < ApplicationRecord
     full_name
   end
 
-  def soft_delete  
+  def set_deleted_at_now
     self.deleted_at = X.time_now
-    save!
     self
   end  
+
+  def set_deleted_status
+    self.status = "deleted"
+    self
+  end
+
+  def set_active_status
+    self.status = "active"
+    self
+  end
+
+  def set_email_nil
+    set_email(nil)
+    self
+  end
+
+  def active?
+    status == "active"
+  end
         
   def active_for_authentication?  
-    super && !deleted_at  
+    super && active?
   end  
+
+  def email_required?
+    active?
+  end
                     
   def inactive_message   
-    !deleted_at ? super : :deleted_account  
+    active? ? super : :deleted_account  
   end  
 end

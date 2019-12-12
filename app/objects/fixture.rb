@@ -3,6 +3,7 @@ class Fixture
     case key
     when "donald"
       donald = X.factory.build("user")
+      donald.set_active_status
       donald.set_email("kaczor.donald@email.com")
       donald.set_password(X.default_password)
       donald.set_name("Donald")
@@ -11,6 +12,7 @@ class Fixture
       donald
     when "the_spirit"
       the_spirit = X.factory.build("user")
+      the_spirit.set_active_status
       the_spirit.set_email("the.spirit@email.com")
       the_spirit.set_password(X.default_password)
       the_spirit.set_name("The Spirit")
