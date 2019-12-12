@@ -1,5 +1,5 @@
 class InitSettings
   def devise_from_email
-    'noreply@klubdyskusyjny.com'
+    'noreply@klubdyskusyjny.herokuapp.com'
   end
 end

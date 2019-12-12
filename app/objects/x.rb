@@ -91,6 +91,18 @@ class X
     "random#{rand(1000)}@email.com"
   end
 
+  def self.excel_url
+    "https://docs.google.com/spreadsheets/d/1rlXgmtZCtLnaQNhJyGGyKzuNJxWX1HsJrLt5pP-zFrg/edit#gid=0"
+  end
+
+  def self.github_url
+    "https://github.com/hauska7/klub_dyskusyjny"
+  end
+
+  def self.contact_email
+    "grzegorz.hauska@gmail.com"
+  end
+
   def self.default_password
     "123456"
   end

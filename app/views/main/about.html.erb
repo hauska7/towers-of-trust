@@ -1,8 +1,14 @@
 <section class="text-center">                                                                                                             
   <div class="container">
-    <h2>About</h2>
+    <div>
+      <h2>About</h2>
+      <p><%= link_to X.t("events"), X.excel_url %></p>
+      <p><%= link_to X.t("source_code"), X.github_url %></p>
+    </div>
 
-    <h2>Contact</h2>
-    <p>grzegorz.hauska@gmail.com</p>
+    <div>
+      <h2>Contact</h2>
+      <p><%= X.contact_email %></p>
+    </div>
   </div>
 </section>
