@@ -124,11 +124,13 @@ class X
   end
 
   def self.generate_color
-    letters = "0123456789ABCDEF".split("")
-    color = "#"
-    6.times do
-      color << letters[rand(16)]
-    end
-    color
+    number1 = rand(56) + 200
+    number1 = number1.to_s(16)
+    number2 = rand(56) + 200
+    number2 = number2.to_s(16)
+    number3 = rand(56) + 200
+    number3 = number3.to_s(16)
+  
+    "##{number1}#{number2}#{number3}"
   end
 end
