@@ -15,6 +15,14 @@ class User < ApplicationRecord
     X.queries.current_vote_of(self)
   end
 
+  def trustee
+    X.queries.trustee_of(self)
+  end
+
+  def team
+    X.queries.supreme_leader(self)
+  end
+
   def dev_init
     X.dev_service.init(self)
     self
@@ -22,6 +30,11 @@ class User < ApplicationRecord
 
   def set_email(email)
     self.email = email
+    self
+  end
+
+  def set_color(color)
+    self.color = color
     self
   end
 
@@ -84,4 +97,8 @@ class User < ApplicationRecord
   def inactive_message   
     active? ? super : :deleted_account  
   end  
+
+  def present(options)
+    X.presenter.present(self, options)
+  end
 end

@@ -31,6 +31,10 @@ class X
     Services.new
   end
 
+  def self.presenter
+    Presenter.new
+  end
+
   def self.t(key)
     translations.get(key)
   end
@@ -117,5 +121,14 @@ class X
       fail unless nice_env?
     else fail
     end
+  end
+
+  def self.generate_color
+    letters = "0123456789ABCDEF".split("")
+    color = "#"
+    6.times do
+      color << letters[rand(16)]
+    end
+    color
   end
 end

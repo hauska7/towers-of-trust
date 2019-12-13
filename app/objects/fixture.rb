@@ -8,6 +8,7 @@ class Fixture
       donald.set_password(X.default_password)
       donald.set_name("Donald")
       donald.start_votes_count
+      donald_.set_color(X.generate_color)
       donald.save!
       donald
     when "the_spirit"
@@ -17,6 +18,7 @@ class Fixture
       the_spirit.set_password(X.default_password)
       the_spirit.set_name("The Spirit")
       the_spirit.start_votes_count
+      the_spirit.set_color(X.generate_color)
       the_spirit.save!
       the_spirit
     else fail

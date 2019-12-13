@@ -7,7 +7,7 @@
             <thead>
               <tr>
                 <th scope="col"><%= X.t("name") %></th>
-                <th><%= X.t("votes_count") %></th>
+                <th><%= X.t("team") %></th>
                 <th><%= X.t("current_vote") %></th>
                 <th><%= X.t("action") %></th>
               </tr>
@@ -15,14 +15,16 @@
             <tbody>
               <tr>
                 <td>
-                  <%= link_to @user.name, X.path_for("show_user", { user: @user }) %>
+                  <%= link_to @user.present("user"), X.path_for("show_user", { user: @user }) %>
                 </td>
                 <td>
-                  <%= @user.votes_count %>
+                  <% if @user.team  %>
+                    <%= link_to @user.team.present("team"), X.path_for("show_user", { user: @user.team }) %>
+                  <% end %>
                 </td>
                 <td>
                   <% if @current_vote %>
-                    <%= link_to @current_vote.person.name, X.path_for("show_user", { user: @current_vote.person }) %>
+                    <%= link_to @current_vote.person.present("user"), X.path_for("show_user", { user: @current_vote.person }) %>
                   <% end %>
                 </td>
                 <td>
@@ -51,17 +53,13 @@
             <thead>
               <tr>
                 <th scope="col"><%= X.t("name") %></th>
-                <th><%= X.t("votes_count") %></th>
               </tr>
             </thead>
             <tbody>
               <% @votes_on.each do |vote| %>
                 <tr>
                   <td>
-                    <%= link_to vote.voter.name, X.path_for("show_user", { user: vote.voter }) %>
-                  </td>
-                  <td>
-                    <%= vote.voter.votes_count %>
+                    <%= link_to vote.voter.present("user"), X.path_for("show_user", { user: vote.voter }) %>
                   </td>
                 </tr>
               <% end %>
@@ -74,7 +72,6 @@
             <thead>
               <tr>
                 <th scope="col"><%= X.t("name") %></th>
-                <th><%= X.t("votes_count") %></th>
                 <th><%= X.t("status") %></th>
                 <th><%= X.t("on_date") %></th>
               </tr>
@@ -83,10 +80,7 @@
               <% @votes_of.each do |vote| %>
                 <tr>
                   <td>
-                    <%= link_to vote.person.name, X.path_for("show_user", { user: vote.person }) %>
-                  </td>
-                  <td>
-                    <%= vote.person.votes_count %>
+                    <%= link_to vote.person.present("user"), X.path_for("show_user", { user: vote.person }) %>
                   </td>
                   <td>
                     <%= vote.present_status %>

@@ -5,6 +5,7 @@ class DevService
     user.set_password(X.default_password)
     user.set_name(X.name_from_email(user.email))
     user.start_votes_count
+    user.set_color(X.generate_color)
     self
   end
 end

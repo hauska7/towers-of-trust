@@ -15,6 +15,16 @@ class Queries
     people_behind(user).size
   end
 
+  def supreme_leader(user)
+    result = nil
+    tmp = user.trustee
+    while !tmp.nil? && tmp != result
+      result = tmp
+      tmp = result.trustee
+    end
+    result
+  end
+
   def votes_on(users, order = nil)
     case order
     when nil
@@ -27,6 +37,10 @@ class Queries
 
   def current_vote_of(user)
     Vote.active.with_voters(user).first
+  end
+
+  def trustee_of(user)
+    user.current_vote&.person
   end
 
   def all_votes_of(user, order = nil)

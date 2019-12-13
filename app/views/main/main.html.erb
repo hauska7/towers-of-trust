@@ -7,18 +7,22 @@
             <thead>
               <tr>
                 <th scope="col"><%= X.t("name") %></th>
-                <th><%= X.t("votes_count") %></th>
+                <th><%= X.t("team") %></th>
               </tr>
             </thead>
             <tbody>
               <% @users.each do |user| %>
                 <tr>
                   <td>
-                    <%= link_to user.name, X.path_for("show_user", { user: user }) %>
+                    <%= link_to user.present("user"), X.path_for("show_user", { user: user }) %>
                   </td>
-                  <td>
-                    <%= user.votes_count %>
-                  </td>
+                  <% if user.team  %>
+                    <td bgcolor="<%= user.team.color %>">
+                      <%= link_to user.team.present("team"), X.path_for("show_user", { user: user.team }) %>
+                     </td>
+                  <% else %>
+                    <td></td>
+                  <% end %>
                 </tr>
               <% end %>
             </tbody>
