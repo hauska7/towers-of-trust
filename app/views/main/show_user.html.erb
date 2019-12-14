@@ -93,6 +93,18 @@
             </tbody>
           </table>
         </div>
+        <div>
+          <h3><%= X.t("moderating_groups") %></h3>
+            <% @moderating_groups.each do |group| %>
+              <%= link_to group.present, X.path_for("show_group", { group: group }) %>
+            <% end %>
+        </div>
+        <div>
+          <h3><%= X.t("participating_groups") %></h3>
+            <% @participating_groups.each do |group| %>
+              <%= link_to group.present, X.path_for("show_group", { group: group }) %>
+            <% end %>
+        </div>
       </div>
     </div>
   </div>

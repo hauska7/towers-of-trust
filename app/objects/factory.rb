@@ -3,6 +3,10 @@ class Factory
     case key
     when "user"
       User.new
+    when "group"
+      Group.new
+    when "group_membership"
+      GroupMembership.new
     when "active_vote"
       Vote.new.set_status_active
     when "view_manager"

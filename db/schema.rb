@@ -10,10 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_13_115258) do
+ActiveRecord::Schema.define(version: 2019_12_13_132945) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "group_memberships", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "member_id", null: false
+    t.bigint "group_id", null: false
+    t.index ["group_id"], name: "index_group_memberships_on_group_id"
+    t.index ["member_id"], name: "index_group_memberships_on_member_id"
+  end
+
+  create_table "groups", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "moderator_id", null: false
+    t.index ["moderator_id"], name: "index_groups_on_moderator_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "full_name", null: false
@@ -46,6 +63,9 @@ ActiveRecord::Schema.define(version: 2019_12_13_115258) do
     t.index ["voter_id"], name: "index_votes_on_voter_id"
   end
 
+  add_foreign_key "group_memberships", "groups"
+  add_foreign_key "group_memberships", "users", column: "member_id"
+  add_foreign_key "groups", "users", column: "moderator_id"
   add_foreign_key "votes", "users", column: "person_id"
   add_foreign_key "votes", "users", column: "voter_id"
 end

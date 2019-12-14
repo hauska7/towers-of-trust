@@ -22,6 +22,19 @@ RSpec.describe MainController, type: :controller do
     get :show_user, params: { user_id: the_spirit.id }
   end
 
+  it 'show_group' do
+    group = X.fixture.get("group")
+
+    # no members
+    get :show_group, params: { group_id: group.id }
+
+    # with members
+    the_spirit = X.fixture.get("the_spirit")
+    X.services.join_group(group, the_spirit) || fail
+
+    get :show_group, params: { group_id: group.id }
+  end
+
   it 'do_vote' do
     donald = X.fixture.get("donald")
     the_spirit = X.fixture.get("the_spirit")
@@ -80,5 +93,48 @@ RSpec.describe MainController, type: :controller do
     expect(vote_4.reload.expired?).to be true
     expect(donald.reload.votes_count).to eq 0
     expect(the_spirit.reload.votes_count).to eq 0
+  end
+
+  it 'create_group' do
+    the_spirit = X.fixture.get("the_spirit")
+
+    controller.sign_in the_spirit
+
+    post :do_create, params: { mode: "group", group: { name: "A nice group" } }
+
+    expect(Group.count).to eq 1
+    group = Group.first!
+    expect(group.name).to eq "A nice group"
+    expect(group.moderator).to eq the_spirit
+  end
+
+  it 'join group' do
+    the_spirit = X.fixture.get("the_spirit")
+
+    controller.sign_in the_spirit
+
+    group = X.fixture.get("group")
+
+    expect(group.member?(the_spirit)).to be false
+
+    post :do_create, params: { mode: "group_membership", group_id: group.id }
+
+    expect(group.reload.member?(the_spirit)).to be true
+  end
+
+  it 'leave group' do
+    the_spirit = X.fixture.get("the_spirit")
+
+    controller.sign_in the_spirit
+
+    group = X.fixture.get("group")
+
+    X.services.join_group(group, the_spirit) || fail
+
+    membership = group.group_memberships.first!
+
+    post :do_destroy, params: { mode: "group_membership", group_membership_id: membership.id }
+
+    expect(group.reload.member?(the_spirit)).to be false
   end
 end

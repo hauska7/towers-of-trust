@@ -1,0 +1,42 @@
+<section class="text-center">                                                                                                             
+  <div class="container">
+    <div>
+      <div>
+        <div>
+          <h1><%= @group.name %></h3>
+          <% if @view_manager.show?("join_group_button") %>
+            <%= link_to X.t("join_group"), X.path_for("do_join_group", { group: @group }), method: "post", class: "btn btn-primary" %>
+          <% elsif @view_manager.show?("leave_group_button") %>
+            <%= link_to X.t("leave_group"), X.path_for("do_leave_group", { group_membership: @group_membership }), method: "post", class: "btn btn-primary" %>
+          <% end %>
+          <h3><%= X.t("members") %></h3>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col"><%= X.t("name") %></th>
+                <th><%= X.t("team") %></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @members.each do |member| %>
+                <tr>
+                  <td>
+                    <%= link_to member.present("user"), X.path_for("show_user", { user: member }) %>
+                  </td>
+                  <td>
+                  <% if member.team  %>
+                    <td bgcolor="<%= member.team.color %>">
+                      <%= link_to member.team.present("team"), X.path_for("show_user", { user: member.team }) %>
+                    </td>
+                  <% else %>
+                    <td></td>
+                  <% end %>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

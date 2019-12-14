@@ -35,6 +35,14 @@ class X
     Presenter.new
   end
 
+  def self.exceptions
+    Exceptions.new
+  end
+
+  def self.ex
+    exceptions
+  end
+
   def self.t(key)
     translations.get(key)
   end

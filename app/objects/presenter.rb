@@ -11,6 +11,8 @@ class Presenter
         object.name
       else fail
       end
+    elsif object.is_a?(Group)
+      object.name
     else fail
     end
   end

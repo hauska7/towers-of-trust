@@ -32,4 +32,16 @@ class Services
 
     recount_votes
   end
+
+  def join_group(group, user)
+    if group.member?(user)
+      false
+    else
+      membership = X.factory.build("group_membership")
+      membership.group = group
+      membership.member = user
+      membership.save!
+      true
+    end
+  end
 end

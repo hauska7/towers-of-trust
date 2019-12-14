@@ -1,0 +1,10 @@
+<div>
+<%= form_for @group, url: X.path_for("do_create_group"), html: { class: "" } do |f| %>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <%= f.text_field :name, class: "form-control", placeholder: X.t("name") %>
+    </div>
+  </div>
+  <%= f.submit X.t("create"), class: "btn btn-primary" %>
+<% end %>
+<div>

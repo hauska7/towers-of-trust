@@ -1,27 +1,39 @@
 class Fixture
+  def initialize
+    @storage = {}
+  end
+
   def get(key)
+    result = @storage[key]
+    return result if !result.nil?
+
     case key
     when "donald"
-      donald = X.factory.build("user")
-      donald.set_active_status
-      donald.set_email("kaczor.donald@email.com")
-      donald.set_password(X.default_password)
-      donald.set_name("Donald")
-      donald.start_votes_count
-      donald_.set_color(X.generate_color)
-      donald.save!
-      donald
+      result = X.factory.build("user")
+      result.set_active_status
+      result.set_email("kaczor.donald@email.com")
+      result.set_password(X.default_password)
+      result.set_name("Donald")
+      result.start_votes_count
+      result.set_color(X.generate_color)
+      result.save!
     when "the_spirit"
-      the_spirit = X.factory.build("user")
-      the_spirit.set_active_status
-      the_spirit.set_email("the.spirit@email.com")
-      the_spirit.set_password(X.default_password)
-      the_spirit.set_name("The Spirit")
-      the_spirit.start_votes_count
-      the_spirit.set_color(X.generate_color)
-      the_spirit.save!
-      the_spirit
+      result = X.factory.build("user")
+      result.set_active_status
+      result.set_email("the.spirit@email.com")
+      result.set_password(X.default_password)
+      result.set_name("The Spirit")
+      result.start_votes_count
+      result.set_color(X.generate_color)
+      result.save!
+    when "group"
+      result = X.factory.build("group")
+      result.set_name("The Group")
+      result.moderator = get("donald")
+      result.save!
     else fail
     end
+    @storage[key] = result
+    result
   end
 end

@@ -3,6 +3,10 @@ class User < ApplicationRecord
   # :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable #, :confirmable
+  
+  has_many :group_memberships, foreign_key: "member_id"
+  has_many :participating_groups, class_name: "Group", through: "group_memberships", source: "group"
+  has_many :moderating_groups, class_name: "Group", foreign_key: "moderator_id"
 
   validates :full_name, presence: true
   validates :status, presence: true
@@ -17,6 +21,10 @@ class User < ApplicationRecord
 
   def trustee
     X.queries.trustee_of(self)
+  end
+
+  def query_groups(options)
+    X.queries.groups_for(self, options)
   end
 
   def team
