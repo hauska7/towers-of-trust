@@ -26,6 +26,11 @@ class ViewManager
     # todo
   end
 
+  def show(key)
+    set(key)
+    self
+  end
+
   def show?(key)
     case key
     when "quick_login"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_13_132945) do
+ActiveRecord::Schema.define(version: 2019_12_14_154336) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 2019_12_13_132945) do
     t.datetime "updated_at", null: false
     t.bigint "member_id", null: false
     t.bigint "group_id", null: false
+    t.integer "trust_count", null: false
     t.index ["group_id"], name: "index_group_memberships_on_group_id"
     t.index ["member_id"], name: "index_group_memberships_on_member_id"
   end
@@ -45,7 +46,6 @@ ActiveRecord::Schema.define(version: 2019_12_13_132945) do
     t.string "unconfirmed_email"
     t.string "phone"
     t.datetime "deleted_at"
-    t.integer "votes_count", null: false
     t.string "status", null: false
     t.string "color"
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -59,6 +59,8 @@ ActiveRecord::Schema.define(version: 2019_12_13_132945) do
     t.datetime "updated_at", null: false
     t.bigint "voter_id", null: false
     t.bigint "person_id", null: false
+    t.bigint "group_id", null: false
+    t.index ["group_id"], name: "index_votes_on_group_id"
     t.index ["person_id"], name: "index_votes_on_person_id"
     t.index ["voter_id"], name: "index_votes_on_voter_id"
   end
@@ -66,6 +68,7 @@ ActiveRecord::Schema.define(version: 2019_12_13_132945) do
   add_foreign_key "group_memberships", "groups"
   add_foreign_key "group_memberships", "users", column: "member_id"
   add_foreign_key "groups", "users", column: "moderator_id"
+  add_foreign_key "votes", "groups"
   add_foreign_key "votes", "users", column: "person_id"
   add_foreign_key "votes", "users", column: "voter_id"
 end

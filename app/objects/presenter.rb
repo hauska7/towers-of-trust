@@ -2,17 +2,24 @@ class Presenter
   def present(object, options = nil)
     if object.is_a?(User)
       if options == "user"
-        if object.votes_count > 0
-          "#{object.name}(#{object.votes_count})"
-        else
-          object.name
-        end
-      elsif options == "team"
+        object.name
+      elsif options == "tower"
         object.name
       else fail
       end
     elsif object.is_a?(Group)
       object.name
+    elsif object.is_a?(GroupMembership)
+      if options == "user"
+        if object.trust_count > 0
+          "#{object.member_name}(#{object.trust_count})"
+        else
+          object.member_name
+        end
+      elsif options == "group"
+        object.group_name
+      else fail
+      end
     else fail
     end
   end

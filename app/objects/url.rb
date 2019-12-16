@@ -11,6 +11,9 @@ class Url
     when "new_group"
       custom_options = { controller: "main", action: "new_group" }
       X.rails_url_for(custom_options.merge(options))
+    when "new_trust"
+      custom_options = { controller: "main", action: "new_trust", trustee_id: a[:trustee].id }
+      X.rails_url_for(custom_options.merge(options))
     when "new_login"
       X.url_helpers.new_user_session_path
     when "new_registration"
@@ -23,11 +26,14 @@ class Url
     when "show_group"
       custom_options = { controller: "main", action: "show_group", group_id: a[:group].id }
       X.rails_url_for(custom_options.merge(options))
-    when "do_vote_regular"
-      custom_options = { controller: "main", action: "do_vote", mode: "regular" }
+    when "show_group_membership"
+      custom_options = { controller: "main", action: "show_group_membership", group_membership_id: a[:group_membership].id }
       X.rails_url_for(custom_options.merge(options))
-    when "do_vote_take_back"
-      custom_options = { controller: "main", action: "do_vote", mode: "take_back" }
+    when "do_trust_regular"
+      custom_options = { controller: "main", action: "do_trust", mode: "regular", trustee_id: a[:trustee].id, group_id: a[:group].id }
+      X.rails_url_for(custom_options.merge(options))
+    when "do_trust_back"
+      custom_options = { controller: "main", action: "do_trust", mode: "back", trust_id: a[:trust].id }
       X.rails_url_for(custom_options.merge(options))
     when "do_login_as_new_user"
       custom_options = { controller: "main", action: "do_dev_helper", mode: "login_as_new_user" }

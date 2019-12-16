@@ -103,10 +103,6 @@ class X
     "random#{rand(1000)}@email.com"
   end
 
-  def self.excel_url
-    "https://docs.google.com/spreadsheets/d/1rlXgmtZCtLnaQNhJyGGyKzuNJxWX1HsJrLt5pP-zFrg/edit#gid=0"
-  end
-
   def self.github_url
     "https://github.com/hauska7/klub_dyskusyjny"
   end
@@ -123,10 +119,26 @@ class X
     email.split("@").first
   end
 
-  def self.guard(what)
+  def self.guard(what, a = nil)
     case what
     when "dev_helper"
       fail unless nice_env?
+    when "leave_group"
+      if a.is_a?(Hash)
+        if a.key?(:current_user) && a.key?(:group_membership)
+          ex.guard! if a[:group_membership].member != a[:current_user]
+        else fail
+        end
+      else fail
+      end
+    when "trust_back"
+      if a.is_a?(Hash)
+        if a.key?(:current_user) && a.key?(:trust)
+          ex.guard! if a[:trust].truster != a[:current_user]
+        else fail
+        end
+      else fail
+      end
     else fail
     end
   end

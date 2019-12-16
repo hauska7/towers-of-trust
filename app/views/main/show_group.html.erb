@@ -3,11 +3,13 @@
     <div>
       <div>
         <div>
-          <h1><%= @group.name %></h3>
+          <h1>
+            <%= link_to @group.present, X.path_for("show_group", { group: @group }) %>
+          </h3>
           <% if @view_manager.show?("join_group_button") %>
             <%= link_to X.t("join_group"), X.path_for("do_join_group", { group: @group }), method: "post", class: "btn btn-primary" %>
           <% elsif @view_manager.show?("leave_group_button") %>
-            <%= link_to X.t("leave_group"), X.path_for("do_leave_group", { group_membership: @group_membership }), method: "post", class: "btn btn-primary" %>
+            <%= link_to X.t("leave_group"), X.path_for("do_leave_group", { group_membership: @membership }), method: "post", class: "btn btn-primary" %>
           <% end %>
           <h3><%= X.t("members") %></h3>
           <table class="table">
@@ -18,15 +20,15 @@
               </tr>
             </thead>
             <tbody>
-              <% @members.each do |member| %>
+              <% @memberships.each do |membership| %>
                 <tr>
                   <td>
-                    <%= link_to member.present("user"), X.path_for("show_user", { user: member }) %>
+                    <%= link_to membership.present_as_member, X.path_for("show_group_membership", { group_membership: membership }) %>
                   </td>
-                  <td>
-                  <% if member.team  %>
-                    <td bgcolor="<%= member.team.color %>">
-                      <%= link_to member.team.present("team"), X.path_for("show_user", { user: member.team }) %>
+                  <% if membership.tower  %>
+                    <td bgcolor="<%= membership.tower.color %>">
+                      <%= link_to membership.tower.present("tower"),
+                                  X.path_for("show_user", { user: membership.tower }) %>
                     </td>
                   <% else %>
                     <td></td>

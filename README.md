@@ -1,8 +1,13 @@
 # README
 
-This is an application to manage klub dyskusyjny. So far it has voting functionality.
+This is an application to manage klub dyskusyjny.
 
-* How to run the test suite
+## Features
+
+### Groups
+### Towers of trust
+
+## How to run the test suite
 
   `docker-compose start`
 

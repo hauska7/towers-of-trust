@@ -14,7 +14,6 @@ class Fixture
       result.set_email("kaczor.donald@email.com")
       result.set_password(X.default_password)
       result.set_name("Donald")
-      result.start_votes_count
       result.set_color(X.generate_color)
       result.save!
     when "the_spirit"
@@ -23,7 +22,6 @@ class Fixture
       result.set_email("the.spirit@email.com")
       result.set_password(X.default_password)
       result.set_name("The Spirit")
-      result.start_votes_count
       result.set_color(X.generate_color)
       result.save!
     when "group"

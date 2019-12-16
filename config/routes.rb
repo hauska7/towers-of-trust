@@ -5,9 +5,11 @@ Rails.application.routes.draw do
   root to: "main#main"
   get '/about', to: 'main#about'
   get '/new_group', to: 'main#new_group'
+  get '/new_trust', to: 'main#new_trust'
   get '/show_user/:user_id', to: 'main#show_user'
   get '/show_group/:group_id', to: 'main#show_group'
-  post '/do_vote', to: 'main#do_vote'
+  get '/show_group_membership/:group_membership_id', to: 'main#show_group_membership'
+  post '/do_trust', to: 'main#do_trust'
   get '/do_dev_helper', to: 'main#do_dev_helper'
   get '/do_logout', to: 'users/registrations#destroy'
   post '/do_create/:mode', to: 'main#do_create'

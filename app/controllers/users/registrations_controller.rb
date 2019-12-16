@@ -5,7 +5,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
     user = resource
     user.set_active_status
-    user.start_votes_count
     user.set_color(X.generate_color)
 
     resource.save

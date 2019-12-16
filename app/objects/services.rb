@@ -1,27 +1,27 @@
 class Services
-  def recount_votes
+  def recount_trusts(group)
     X.transaction do
-      X.queries.all_users.each do |u|
-        votes_count = X.queries.count_votes(u)
-        u.votes_count = votes_count
-        u.save!
+      group.query_memberships.each do |membership|
+        trust_count = X.queries.count_trust(membership)
+        membership.trust_count = trust_count
+        membership.save!
       end
     end
   end
 
   def delete_account(user)
     X.transaction do
-      votes_on = X.queries.votes_on(user)
-      votes_of = X.queries.all_votes_of(user)
+      trusts_on = X.queries.trusts_on(user)
+      trusts_of = X.queries.all_trusts_of({ user: user })
 
-      votes_on.each do |vote|
-        vote.set_status_account_deleted
-        vote.save!
+      trusts_on.each do |trust|
+        trust.set_status_account_deleted
+        trust.save!
       end
 
-      votes_of.each do |vote|
-        vote.set_status_account_deleted
-        vote.save!
+      trusts_of.each do |trust|
+        trust.set_status_account_deleted
+        trust.save!
       end
 
       user.set_deleted_at_now
@@ -30,18 +30,28 @@ class Services
       user.save!
     end
 
-    recount_votes
+    recount_trusts
+    self
   end
 
-  def join_group(group, user)
-    if group.member?(user)
-      false
-    else
-      membership = X.factory.build("group_membership")
-      membership.group = group
-      membership.member = user
-      membership.save!
-      true
+  def join_group(group, users)
+    users = Array(users)
+    users.map do |user|
+      if group.not_member?(user)
+        membership = X.factory.build("group_membership")
+        membership.group = group
+        membership.member = user
+        membership.start_trust_count
+        membership.save!
+      end
     end
+    self
+  end
+
+  def trust_back(trust)
+    trust.set_status_old
+    trust.expire_now
+    trust.save!
+    self
   end
 end

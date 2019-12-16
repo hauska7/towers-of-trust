@@ -10,25 +10,25 @@ class User < ApplicationRecord
 
   validates :full_name, presence: true
   validates :status, presence: true
-  validates :votes_count, presence: true
 
-  scope :order_by_votes_count, -> { order(votes_count: :desc) }
   scope :valid, -> { where.not(status: "deleted") }
 
-  def current_vote
-    X.queries.current_vote_of(self)
+  def current_trust(a)
+    a[:truster] = self
+    X.queries.current_trust(a)
   end
 
-  def trustee
-    X.queries.trustee_of(self)
+  def trustee(group)
+    X.queries.trustee({ truster: self, group: group })
   end
 
   def query_groups(options)
     X.queries.groups_for(self, options)
   end
 
-  def team
-    X.queries.supreme_leader(self)
+  def query_group_memberships(a)
+    a[:user] = self
+    X.queries.group_memberships(a)
   end
 
   def dev_init
@@ -53,16 +53,6 @@ class User < ApplicationRecord
 
   def set_password(password)
     self.password = password
-    self
-  end
-
-  def start_votes_count
-    set_votes_count(0)
-    self
-  end
-
-  def set_votes_count(votes_count)
-    self.votes_count = votes_count
     self
   end
 

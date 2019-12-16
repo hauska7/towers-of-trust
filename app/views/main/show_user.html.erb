@@ -3,43 +3,26 @@
     <div>
       <div>
         <div>
+          <h2>
+            <% if @view_manager.show?("your_profile_title")  %>
+              <%= X.t("your_profile") %>
+            <% end %>
+            <% if @view_manager.show?("somebody_profile_title")  %>
+              <%= X.t("somebody_profile") %>
+            <% end %>
+            <%= link_to @user.present("user"), X.path_for("show_user", { user: @user }) %>
+          </h2>
           <table class="table">
             <thead>
               <tr>
-                <th scope="col"><%= X.t("name") %></th>
-                <th><%= X.t("team") %></th>
-                <th><%= X.t("current_vote") %></th>
                 <th><%= X.t("action") %></th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>
-                  <%= link_to @user.present("user"), X.path_for("show_user", { user: @user }) %>
-                </td>
-                <td>
-                  <% if @user.team  %>
-                    <%= link_to @user.team.present("team"), X.path_for("show_user", { user: @user.team }) %>
-                  <% end %>
-                </td>
-                <td>
-                  <% if @current_vote %>
-                    <%= link_to @current_vote.person.present("user"), X.path_for("show_user", { user: @current_vote.person }) %>
-                  <% end %>
-                </td>
-                <td>
-                  <% if @view_manager.show?("vote_button")  %>
-                    <form action="<%= X.path_for("do_vote_regular") %>" method="POST">
-                      <%= hidden_field_tag :authenticity_token, X.form_authenticity_token(self) %>
-                      <input type="hidden" name="user_id" value="<%= @user.id %>" />
-                      <button type="submit" class="btn btn-primary"><%= X.t("do_vote") %></button>
-                    </form>
-                  <% end %>
-                  <% if @view_manager.show?("expire_my_vote_button") %>
-                    <form action="<%= X.path_for("do_vote_take_back") %>" method="POST">
-                      <%= hidden_field_tag :authenticity_token, X.form_authenticity_token(self) %>
-                      <button type="submit" class="btn btn-primary"><%= X.t("expire_my_vote_button") %></button>
-                    </form>
+                  <% if @view_manager.show?("trust_for_person_link")  %>
+                    <%= link_to X.t("new_trust"), X.path_for("new_trust", { trustee: @user }), class: "btn btn-primary" %>
                   <% end %>
                 </td>
               </tr>
@@ -48,60 +31,50 @@
         </div>
 
         <div>
-          <h3><%= X.t("has_votes") %></h3>
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col"><%= X.t("name") %></th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @votes_on.each do |vote| %>
+          <h3><%= X.t("participating_groups") %></h3>
+            <table class="table">
+              <thead>
                 <tr>
-                  <td>
-                    <%= link_to vote.voter.present("user"), X.path_for("show_user", { user: vote.voter }) %>
-                  </td>
+                  <th scope="col"><%= X.t("group") %></th>
+                  <th><%= X.t("trustee") %></th>
+                  <th><%= X.t("tower_of_trust") %></th>
+                  <th><%= X.t("action") %></th>
                 </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-        <div>
-          <h3><%= X.t("voting_record") %></h3>
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col"><%= X.t("name") %></th>
-                <th><%= X.t("status") %></th>
-                <th><%= X.t("on_date") %></th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @votes_of.each do |vote| %>
-                <tr>
-                  <td>
-                    <%= link_to vote.person.present("user"), X.path_for("show_user", { user: vote.person }) %>
-                  </td>
-                  <td>
-                    <%= vote.present_status %>
-                  </td>
-                  <td>
-                    <%= vote.present_created_at %>
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                <% @memberships.each do |membership| %>
+                  <tr>
+                    <td>
+                      <%= link_to membership.present_as_group, X.path_for("show_group_membership", { group_membership: membership }) %>
+                    </td>
+                    <td>
+                      <% if membership.trustee  %>
+                        <%= link_to membership.trustee.present("user"), X.path_for("show_user", { user: membership.trustee }) %>
+                      <% end %>
+                    </td>
+                    <% if membership.tower  %>
+                      <td bgcolor="<%= membership.tower.color %>">
+                        <%= link_to membership.tower.present("tower"), X.path_for("show_user", { user: membership.tower }) %>
+                      </td>
+                    <% else %>
+                      <td>
+                      </td>
+                    <% end %>
+                    <td>
+                      <% if @view_manager.show?("trust_back_buttons")  %>
+                        <% if membership.current_trust  %>
+                          <%= link_to X.t("trust_back"), X.path_for("do_trust_back", { trust: membership.current_trust }), method: "post", class: "btn btn-primary" %>
+                        <% end %>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
         </div>
         <div>
           <h3><%= X.t("moderating_groups") %></h3>
             <% @moderating_groups.each do |group| %>
-              <%= link_to group.present, X.path_for("show_group", { group: group }) %>
-            <% end %>
-        </div>
-        <div>
-          <h3><%= X.t("participating_groups") %></h3>
-            <% @participating_groups.each do |group| %>
               <%= link_to group.present, X.path_for("show_group", { group: group }) %>
             <% end %>
         </div>
