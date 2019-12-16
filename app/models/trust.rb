@@ -1,24 +1,16 @@
-class Vote < ApplicationRecord
-  belongs_to :voter, class_name: "User"
-  belongs_to :person, class_name: "User"
+class Trust < ApplicationRecord
+  belongs_to :truster, class_name: "User"
+  belongs_to :trustee, class_name: "User"
   belongs_to :group, class_name: "Group"
 
   scope :active, -> { where(status: "active") }
   scope :valid, -> { where.not(status: "account_deleted") }
-  scope :with_persons, ->(persons) { where(person: persons) }
-  scope :with_voters, ->(voters) { where(voter: voters) }
+  scope :with_trustees, ->(trustees) { where(trustee: trustees) }
+  scope :with_trusters, ->(trusters) { where(truster: trusters) }
   scope :with_groups, ->(groups) { where(group: groups) }
-  scope :includes_all, ->() { includes(:voter, :person, :group) }
+  scope :includes_all, ->() { includes(:truster, :trustee, :group) }
 
   validates :status, presence: true
-
-  def trustee
-    person
-  end
-
-  def truster
-    voter
-  end
 
   def active?
     status == "active"

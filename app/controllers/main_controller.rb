@@ -27,6 +27,10 @@ class MainController < ApplicationController
     @trusts_on = X.queries.trusts_on(@user, { order: "order_by_creation", group: @group })
     @trusts_of = X.queries.all_trusts_of({ user: @user, order: "order_by_creation", group: @group })
     @current_trust = @user.current_trust({ group: @group })
+    if X.logged_in?(self)
+      @view_manager.show("trust_for_person_link")
+    end
+    @view_manager.valid
   end
 
   def show_group
@@ -88,13 +92,13 @@ class MainController < ApplicationController
           current_trust.expire_now
           current_trust.save!
         end
-        vote = X.factory.build("vote")
-        vote.set_status_active
-        vote.group = group
-        vote.person = trustee
-        vote.voter = current_user
-        vote.set_reason(params["reason"])
-        vote.save!
+        trust = X.factory.build("trust")
+        trust.set_status_active
+        trust.group = group
+        trust.trustee = trustee
+        trust.truster = current_user
+        trust.set_reason(params["reason"])
+        trust.save!
       end
     when "back"
       trust = X.queries.find_trust!(params["trust_id"])

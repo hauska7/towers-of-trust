@@ -35,7 +35,7 @@ RSpec.describe MainController, type: :controller do
     get :show_group, params: { group_id: group.id }
   end
 
-  it 'do_vote' do
+  it 'do_trust' do
     fixture = X.fixture
     donald = fixture.get("donald")
     the_spirit = fixture.get("the_spirit")
@@ -47,12 +47,12 @@ RSpec.describe MainController, type: :controller do
 
     post :do_trust, params: { mode: "regular", trustee_id: donald.id, group_id: group.id }
 
-    expect(Vote.count).to eq 1
-    vote = Vote.first!
-    expect(vote.active?).to be true
-    expect(vote.person).to eq donald
-    expect(vote.voter).to eq the_spirit
-    expect(vote.group).to eq group
+    expect(Trust.count).to eq 1
+    trust = Trust.first!
+    expect(trust.active?).to be true
+    expect(trust.trustee).to eq donald
+    expect(trust.truster).to eq the_spirit
+    expect(trust.group).to eq group
     the_spirit_membership = group.query_membership(the_spirit)
     expect(the_spirit_membership.trust_count).to eq 0
     donald_membership = group.query_membership(donald)
@@ -60,13 +60,13 @@ RSpec.describe MainController, type: :controller do
 
     post :do_trust, params: { mode: "regular", trustee_id: donald.id, group_id: group.id }
 
-    expect(Vote.count).to eq 2
-    expect(vote.reload.expired?).to be true
-    vote_2 = Vote.last
-    expect(vote_2.active?).to be true
-    expect(vote_2.person).to eq donald
-    expect(vote_2.voter).to eq the_spirit
-    expect(vote_2.group).to eq group
+    expect(Trust.count).to eq 2
+    expect(trust.reload.expired?).to be true
+    trust_2 = Trust.last
+    expect(trust_2.active?).to be true
+    expect(trust_2.trustee).to eq donald
+    expect(trust_2.truster).to eq the_spirit
+    expect(trust_2.group).to eq group
     expect(the_spirit_membership.reload.trust_count).to eq 0
     expect(donald_membership.reload.trust_count).to eq 1
 
@@ -75,32 +75,32 @@ RSpec.describe MainController, type: :controller do
 
     post :do_trust, params: { mode: "regular", trustee_id: the_spirit.id, group_id: group.id }
 
-    expect(Vote.count).to eq 3
-    expect(vote_2.reload.expired?).to be true
-    vote_3 = Vote.last
-    expect(vote_3.active?).to be true
-    expect(vote_3.person).to eq the_spirit
-    expect(vote_3.voter).to eq donald
-    expect(vote_3.group).to eq group
+    expect(Trust.count).to eq 3
+    expect(trust_2.reload.expired?).to be true
+    trust_3 = Trust.last
+    expect(trust_3.active?).to be true
+    expect(trust_3.trustee).to eq the_spirit
+    expect(trust_3.truster).to eq donald
+    expect(trust_3.group).to eq group
     expect(donald_membership.reload.trust_count).to eq 0
     expect(the_spirit_membership.reload.trust_count).to eq 1
 
     post :do_trust, params: { mode: "regular", trustee_id: donald.id, group_id: group.id }
 
-    expect(Vote.count).to eq 4
-    expect(vote_3.reload.expired?).to be true
-    vote_4 = Vote.last
-    expect(vote_4.active?).to be true
-    expect(vote_4.person).to eq donald
-    expect(vote_4.voter).to eq donald
-    expect(vote_4.group).to eq group
+    expect(Trust.count).to eq 4
+    expect(trust_3.reload.expired?).to be true
+    trust_4 = Trust.last
+    expect(trust_4.active?).to be true
+    expect(trust_4.trustee).to eq donald
+    expect(trust_4.truster).to eq donald
+    expect(trust_4.group).to eq group
     expect(donald_membership.reload.trust_count).to eq 1
     expect(the_spirit_membership.reload.trust_count).to eq 0
 
     post :do_trust, params: { mode: "back", trust_id: donald_membership.current_trust.id }
 
-    expect(Vote.count).to eq 4
-    expect(vote_4.reload.expired?).to be true
+    expect(Trust.count).to eq 4
+    expect(trust_4.reload.expired?).to be true
     expect(donald_membership.reload.trust_count).to eq 0
     expect(the_spirit_membership.reload.trust_count).to eq 0
   end

@@ -19,7 +19,7 @@ class Queries
   end
 
   def find_trust(trust_id)
-    Vote.valid.find_by(id: trust_id)
+    Trust.valid.find_by(id: trust_id)
   end
 
   def find_user!(user_id)
@@ -137,9 +137,9 @@ class Queries
 
     case options[:order]
     when nil
-      Vote.active.with_persons(users).with_groups(group).includes_all.to_a
+      Trust.active.with_trustees(users).with_groups(group).includes_all.to_a
     when "order_by_creation"
-      Vote.active.with_persons(users).with_groups(group).includes_all.order(created_at: :desc).to_a
+      Trust.active.with_trustees(users).with_groups(group).includes_all.order(created_at: :desc).to_a
     else fail
     end
   end
@@ -147,9 +147,9 @@ class Queries
   def current_trust(a)
     if a.is_a?(Hash)
       if a.key?(:group_membership)
-        Vote.active.with_voters(a[:group_membership].member).with_groups(a[:group_membership].group).first
+        Trust.active.with_trusters(a[:group_membership].member).with_groups(a[:group_membership].group).first
       elsif a.key?(:truster) && a.key?(:group)
-        Vote.active.with_voters(a[:truster]).with_groups(a[:group]).first
+        Trust.active.with_trusters(a[:truster]).with_groups(a[:group]).first
       else fail
       end
     else fail
@@ -172,13 +172,13 @@ class Queries
     if a.is_a?(Hash)
       if a.key?(:user)
         if !a.key?(:group)
-          Vote.valid.with_voters(a[:user]).includes_all.to_a
+          Trust.valid.with_trusters(a[:user]).includes_all.to_a
         elsif a.key?(:group)
           case a[:order]
           when nil
-            Vote.valid.with_voters(a[:user]).with_groups(a[:group]).includes_all.to_a
+            Trust.valid.with_trusters(a[:user]).with_groups(a[:group]).includes_all.to_a
           when "order_by_creation"
-            Vote.valid.with_voters(a[:user]).with_groups(a[:group]).includes_all.order(created_at: :desc).to_a
+            Trust.valid.with_trusters(a[:user]).with_groups(a[:group]).includes_all.order(created_at: :desc).to_a
           else fail
           end
         else fail

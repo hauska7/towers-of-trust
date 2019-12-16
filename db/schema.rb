@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_14_154336) do
+ActiveRecord::Schema.define(version: 2019_12_16_174914) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,19 @@ ActiveRecord::Schema.define(version: 2019_12_14_154336) do
     t.index ["moderator_id"], name: "index_groups_on_moderator_id"
   end
 
+  create_table "trusts", force: :cascade do |t|
+    t.string "status", null: false
+    t.datetime "expired_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "truster_id", null: false
+    t.bigint "trustee_id", null: false
+    t.bigint "group_id", null: false
+    t.index ["group_id"], name: "index_trusts_on_group_id"
+    t.index ["trustee_id"], name: "index_trusts_on_trustee_id"
+    t.index ["truster_id"], name: "index_trusts_on_truster_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "full_name", null: false
     t.string "email"
@@ -52,23 +65,10 @@ ActiveRecord::Schema.define(version: 2019_12_14_154336) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  create_table "votes", force: :cascade do |t|
-    t.string "status", null: false
-    t.datetime "expired_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "voter_id", null: false
-    t.bigint "person_id", null: false
-    t.bigint "group_id", null: false
-    t.index ["group_id"], name: "index_votes_on_group_id"
-    t.index ["person_id"], name: "index_votes_on_person_id"
-    t.index ["voter_id"], name: "index_votes_on_voter_id"
-  end
-
   add_foreign_key "group_memberships", "groups"
   add_foreign_key "group_memberships", "users", column: "member_id"
   add_foreign_key "groups", "users", column: "moderator_id"
-  add_foreign_key "votes", "groups"
-  add_foreign_key "votes", "users", column: "person_id"
-  add_foreign_key "votes", "users", column: "voter_id"
+  add_foreign_key "trusts", "groups"
+  add_foreign_key "trusts", "users", column: "trustee_id"
+  add_foreign_key "trusts", "users", column: "truster_id"
 end

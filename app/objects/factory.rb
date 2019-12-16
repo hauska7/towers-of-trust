@@ -7,8 +7,8 @@ class Factory
       Group.new
     when "group_membership"
       GroupMembership.new
-    when "vote"
-      Vote.new
+    when "trust"
+      Trust.new
     when "view_manager"
       ViewManager.new
     else fail

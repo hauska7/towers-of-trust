@@ -11,6 +11,7 @@
               <tr>
                 <th><%= X.t("tower_of_trust") %></th>
                 <th><%= X.t("trustee") %></th>
+                <th><%= X.t("action") %></th>
               </tr>
             </thead>
             <tbody>
@@ -28,13 +29,18 @@
                     <%= link_to @current_trust.trustee.present("user"), X.path_for("show_user", { user: @current_trust.trust }) %>
                   <% end %>
                 </td>
+                <td>
+                  <% if @view_manager.show?("trust_for_person_link")  %>
+                    <%= link_to X.t("new_trust"), X.path_for("new_trust", { trustee: @membership.member }), class: "btn btn-primary" %>
+                  <% end %>
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <div>
-          <h3><%= X.t("has_votes") %></h3>
+          <h3><%= X.t("has_trust") %></h3>
           <table class="table">
             <thead>
               <tr>
