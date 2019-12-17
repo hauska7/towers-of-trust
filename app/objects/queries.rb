@@ -7,14 +7,22 @@ class Queries
     Group.find_by(id: group_id)
   end
 
+  def find_gmember(a)
+    find_group_membership(a)
+  end
+
   def find_group_membership(a)
     if a.is_a?(Hash)
       if a.key?(:group) && a.key?(:member)
-        GroupMembership.where(group: a[:group], member: a[:member]).first
+        if a.fetch(:with_deleted, false)
+          GroupMembership.where(group: a[:group], member: a[:member]).first
+        else
+          GroupMembership.active.where(group: a[:group], member: a[:member]).first
+        end
       else fail
       end
     else
-      GroupMembership.find_by(id: a)
+      GroupMembership.active.find_by(id: a)
     end
   end
 
@@ -28,6 +36,10 @@ class Queries
 
   def find_group!(group_id)
     find_group(group_id) || X.ex.not_found!
+  end
+
+  def find_gmember!(a)
+    find_group_membership!(a)
   end
 
   def find_group_membership!(a)
@@ -67,15 +79,15 @@ class Queries
       if a.key?(:group)
         case a[:order]
         when nil
-          a[:group].memberships.order_by_trust_count.to_a
+          a[:group].memberships.active.order_by_trust_count.to_a
         when "order_by_trust_count"
-          a[:group].memberships.order_by_trust_count.to_a
+          a[:group].memberships.active.order_by_trust_count.to_a
         else fail
         end
-      elsif a.key?(:user)
+      elsif a.key?(:member)
         case a[:order]
         when "order_by_trust_count"
-          a[:user].group_memberships.order_by_trust_count.to_a
+          a[:member].group_memberships.active.order_by_trust_count.to_a
         else fail
         end
       else fail
@@ -87,7 +99,7 @@ class Queries
   def group_members(group, options = nil)
     case options
     when nil
-      group.members.to_a
+      group.members.active.to_a
     else fail
     end
   end
@@ -107,10 +119,19 @@ class Queries
 
   def count_trust(a)
     if a.is_a?(GroupMembership)
-      people_behind(a.member, a.group).size
-    elsif a.is_a?(Hash)
-      if a.key?(:user) && a.key?(:group)
-        people_behind(a[:user], a[:group]).size
+      trusting_gmembers_from_trust({ gmember: a }).size
+    else fail
+    end
+  end
+
+  def dependant_group_memberships(group_membership)
+    group_membership.memmberships_in_this_tower.active.to_a
+  end
+
+  def tower_from_trust(a)
+    if a.is_a?(Hash)
+      if a.key?(:group_membership)
+        supreme_leader(a[:group_membership])&.group_membership({ group: a[:group_membership].group })
       else fail
       end
     else fail
@@ -132,14 +153,14 @@ class Queries
     end
   end
 
-  def trusts_on(users, options)
+  def trusts_on(group_memberships, options)
     group = options.fetch(:group)
 
     case options[:order]
     when nil
-      Trust.active.with_trustees(users).with_groups(group).includes_all.to_a
+      Trust.active.with_trustees(group_memberships).with_groups(group).includes_all.to_a
     when "order_by_creation"
-      Trust.active.with_trustees(users).with_groups(group).includes_all.order(created_at: :desc).to_a
+      Trust.active.with_trustees(group_memberships).with_groups(group).includes_all.order(created_at: :desc).to_a
     else fail
     end
   end
@@ -147,7 +168,7 @@ class Queries
   def current_trust(a)
     if a.is_a?(Hash)
       if a.key?(:group_membership)
-        Trust.active.with_trusters(a[:group_membership].member).with_groups(a[:group_membership].group).first
+        Trust.active.with_trusters(a[:group_membership]).with_groups(a[:group_membership].group).first
       elsif a.key?(:truster) && a.key?(:group)
         Trust.active.with_trusters(a[:truster]).with_groups(a[:group]).first
       else fail
@@ -170,37 +191,53 @@ class Queries
 
   def all_trusts_of(a)
     if a.is_a?(Hash)
-      if a.key?(:user)
+      if a.key?(:group_membership)
         if !a.key?(:group)
-          Trust.valid.with_trusters(a[:user]).includes_all.to_a
+          Trust.valid.with_trusters(a[:group_membership]).includes_all.to_a
         elsif a.key?(:group)
           case a[:order]
           when nil
-            Trust.valid.with_trusters(a[:user]).with_groups(a[:group]).includes_all.to_a
+            Trust.valid.with_trusters(a[:group_membership]).with_groups(a[:group]).includes_all.to_a
           when "order_by_creation"
-            Trust.valid.with_trusters(a[:user]).with_groups(a[:group]).includes_all.order(created_at: :desc).to_a
+            Trust.valid.with_trusters(a[:group_membership]).with_groups(a[:group]).includes_all.order(created_at: :desc).to_a
           else fail
           end
         else fail
         end
+      elsif a.key?(:user)
+        Trust.valid.with_truster_users(a[:user]).includes_all.to_a
       else fail
       end
     else fail
     end
   end
 
-  def people_behind(user, group)
-    result = []
-    tmp = [user]
-    while tmp.present?
-      tmp = trusts_on(tmp, { group: group }).map { |trust| trust.truster }
-      tmp.select! { |user| !result.include?(user) }
-      result.concat tmp
+  def trusting_gmembers_from_trust(a)
+    if a.is_a?(Hash)
+      if a.key?(:gmember)
+        gmember = a[:gmember]
+        group = gmember.group
+        result = []
+        tmp = [gmember]
+        while tmp.present?
+          tmp = trusts_on(tmp, { group: group }).map { |trust| trust.truster }
+          tmp.select! { |gm| !result.include?(gm) }
+          result.concat tmp
+        end
+        result
+      else fail
+      end
+    else fail
     end
-    result
   end
 
-  def supports?(whom, who, group)
-    people_behind(whom, group).include?(who)
+  def trusting?(a)
+    if a.is_a?(Hash)
+      if a.key?(:trustee) && a.key?(:truster)
+        trusting_gmembers_from_trust({ gmember: a[:trustee] }).include?(a[:truster])
+      else fail
+      end
+    else fail
+    end
   end
 end

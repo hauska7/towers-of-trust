@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_16_174914) do
+ActiveRecord::Schema.define(version: 2019_12_17_093526) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,8 +21,12 @@ ActiveRecord::Schema.define(version: 2019_12_16_174914) do
     t.bigint "member_id", null: false
     t.bigint "group_id", null: false
     t.integer "trust_count", null: false
+    t.bigint "tower_id"
+    t.string "color", null: false
+    t.string "status", null: false
     t.index ["group_id"], name: "index_group_memberships_on_group_id"
     t.index ["member_id"], name: "index_group_memberships_on_member_id"
+    t.index ["tower_id"], name: "index_group_memberships_on_tower_id"
   end
 
   create_table "groups", force: :cascade do |t|
@@ -38,9 +42,9 @@ ActiveRecord::Schema.define(version: 2019_12_16_174914) do
     t.datetime "expired_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "truster_id", null: false
-    t.bigint "trustee_id", null: false
     t.bigint "group_id", null: false
+    t.bigint "trustee_id", null: false
+    t.bigint "truster_id", null: false
     t.index ["group_id"], name: "index_trusts_on_group_id"
     t.index ["trustee_id"], name: "index_trusts_on_trustee_id"
     t.index ["truster_id"], name: "index_trusts_on_truster_id"
@@ -60,15 +64,15 @@ ActiveRecord::Schema.define(version: 2019_12_16_174914) do
     t.string "phone"
     t.datetime "deleted_at"
     t.string "status", null: false
-    t.string "color"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "group_memberships", "group_memberships", column: "tower_id"
   add_foreign_key "group_memberships", "groups"
   add_foreign_key "group_memberships", "users", column: "member_id"
   add_foreign_key "groups", "users", column: "moderator_id"
+  add_foreign_key "trusts", "group_memberships", column: "trustee_id"
+  add_foreign_key "trusts", "group_memberships", column: "truster_id"
   add_foreign_key "trusts", "groups"
-  add_foreign_key "trusts", "users", column: "trustee_id"
-  add_foreign_key "trusts", "users", column: "truster_id"
 end

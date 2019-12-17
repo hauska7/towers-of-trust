@@ -2,7 +2,7 @@
   <div class="container">
     <div>
           <h2>
-            <%= link_to @membership.present_as_member, X.path_for("show_user", { user: @membership.member }) %>
+            <%= link_to @membership.present("user"), X.path_for("show_user", { user: @membership.member }) %>
             <%= X.t("in_group") %>
             <%= link_to @group.present, X.path_for("show_group", { group: @group }) %>
           </h2>
@@ -18,7 +18,7 @@
               <tr>
                 <% if @membership.tower  %>
                   <td bgcolor="<%= @membership.tower.color %>">
-                    <%= link_to @membership.tower.present("tower"), X.path_for("show_user", { user: @membership.tower }) %>
+                    <%= link_to @membership.tower.present("tower"), X.path_for("show_group_membership", { group_membership: @membership.tower }) %>
                   </td>
                 <% else %>
                   <td>
@@ -26,7 +26,7 @@
                 <% end %>
                 <td>
                   <% if @current_trust %>
-                    <%= link_to @current_trust.trustee.present("user"), X.path_for("show_user", { user: @current_trust.trust }) %>
+                    <%= link_to @current_trust.trustee.present, X.path_for("show_user", { user: @current_trust.trustee }) %>
                   <% end %>
                 </td>
                 <td>
@@ -44,14 +44,14 @@
           <table class="table">
             <thead>
               <tr>
-                <th scope="col"><%= X.t("name") %></th>
+                <th scope="col"><%= X.t("user") %></th>
               </tr>
             </thead>
             <tbody>
               <% @trusts_on.each do |trust| %>
                 <tr>
                   <td>
-                    <%= link_to trust.truster.present("user"), X.path_for("show_user", { user: trust.truster }) %>
+                    <%= link_to trust.truster.present, X.path_for("show_user", { user: trust.truster }) %>
                   </td>
                 </tr>
               <% end %>
@@ -72,7 +72,7 @@
               <% @trusts_of.each do |trust| %>
                 <tr>
                   <td>
-                    <%= link_to trust.trustee.present("user"), X.path_for("show_user", { user: trust.trustee }) %>
+                    <%= link_to trust.trustee.present, X.path_for("show_user", { user: trust.trustee }) %>
                   </td>
                   <td>
                     <%= trust.present_status %>

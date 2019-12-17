@@ -14,7 +14,6 @@ class Fixture
       result.set_email("kaczor.donald@email.com")
       result.set_password(X.default_password)
       result.set_name("Donald")
-      result.set_color(X.generate_color)
       result.save!
     when "the_spirit"
       result = X.factory.build("user")
@@ -22,7 +21,6 @@ class Fixture
       result.set_email("the.spirit@email.com")
       result.set_password(X.default_password)
       result.set_name("The Spirit")
-      result.set_color(X.generate_color)
       result.save!
     when "group"
       result = X.factory.build("group")

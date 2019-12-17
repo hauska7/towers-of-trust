@@ -2,7 +2,11 @@ class Group < ApplicationRecord
   belongs_to :moderator, class_name: "User"
 
   has_many :memberships, class_name: "GroupMembership"
-  has_many :members, through: :memberships
+  has_many :members, through: :memberships do
+    def active
+      where(group_memberships: { status: "active" })
+    end
+   end
 
   scope :order_by_members_count, -> {  } #todo
 
@@ -15,6 +19,10 @@ class Group < ApplicationRecord
   def query_memberships(a = {})
     a[:group] = self
     X.queries.group_memberships(a)
+  end
+
+  def query_gmember(user)
+    query_membership(user)
   end
 
   def query_membership(user)

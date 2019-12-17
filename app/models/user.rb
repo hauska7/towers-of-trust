@@ -26,9 +26,18 @@ class User < ApplicationRecord
     X.queries.groups_for(self, options)
   end
 
+  def query_gmembers(a = {})
+    query_group_memberships(a)
+  end
+
   def query_group_memberships(a)
-    a[:user] = self
+    a[:member] = self
     X.queries.group_memberships(a)
+  end
+
+  def group_membership(a)
+    a[:member] = self
+    X.queries.find_group_membership(a)
   end
 
   def dev_init
@@ -38,11 +47,6 @@ class User < ApplicationRecord
 
   def set_email(email)
     self.email = email
-    self
-  end
-
-  def set_color(color)
-    self.color = color
     self
   end
 
@@ -96,7 +100,7 @@ class User < ApplicationRecord
     active? ? super : :deleted_account  
   end  
 
-  def present(options)
+  def present(options = nil)
     X.presenter.present(self, options)
   end
 end

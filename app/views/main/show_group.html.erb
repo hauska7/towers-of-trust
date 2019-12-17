@@ -15,24 +15,28 @@
           <table class="table">
             <thead>
               <tr>
-                <th scope="col"><%= X.t("name") %></th>
-                <th><%= X.t("team") %></th>
+                <th scope="col"><%= X.t("user") %></th>
+                <th><%= X.t("tower_of_trust") %></th>
+                <th><%= X.t("group_membership") %></th>
               </tr>
             </thead>
             <tbody>
               <% @memberships.each do |membership| %>
                 <tr>
                   <td>
-                    <%= link_to membership.present_as_member, X.path_for("show_group_membership", { group_membership: membership }) %>
+                    <%= link_to membership.present("user"), X.path_for("show_user", { user: membership.member }) %>
                   </td>
                   <% if membership.tower  %>
                     <td bgcolor="<%= membership.tower.color %>">
                       <%= link_to membership.tower.present("tower"),
-                                  X.path_for("show_user", { user: membership.tower }) %>
+                                  X.path_for("show_group_membership", { group_membership: membership.tower }) %>
                     </td>
                   <% else %>
                     <td></td>
                   <% end %>
+                  <td>
+                    <%= link_to X.t("group_membership_instance"), X.path_for("show_group_membership", { group_membership: membership }) %>
+                  </td>
                 </tr>
               <% end %>
             </tbody>

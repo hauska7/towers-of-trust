@@ -1,12 +1,13 @@
 class Trust < ApplicationRecord
-  belongs_to :truster, class_name: "User"
-  belongs_to :trustee, class_name: "User"
+  belongs_to :truster, class_name: "GroupMembership"
+  belongs_to :trustee, class_name: "GroupMembership"
   belongs_to :group, class_name: "Group"
 
   scope :active, -> { where(status: "active") }
   scope :valid, -> { where.not(status: "account_deleted") }
   scope :with_trustees, ->(trustees) { where(trustee: trustees) }
   scope :with_trusters, ->(trusters) { where(truster: trusters) }
+  scope :with_truster_users, ->(users) { joins(:truster).where(truster: { member: users }) }
   scope :with_groups, ->(groups) { where(group: groups) }
   scope :includes_all, ->() { includes(:truster, :trustee, :group) }
 

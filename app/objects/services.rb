@@ -9,10 +9,22 @@ class Services
     end
   end
 
+  def recount_towers(group)
+    X.transaction do
+      group.query_memberships.each do |membership|
+        tower = X.queries.tower_from_trust({ group_membership: membership })
+        membership.tower = tower
+        membership.save!
+      end
+    end
+  end
+
   def delete_account(user)
     X.transaction do
       trusts_on = X.queries.trusts_on(user)
       trusts_of = X.queries.all_trusts_of({ user: user })
+      gmembers = user.query_gmembers
+      groups = gmembers.map(&:group)
 
       trusts_on.each do |trust|
         trust.set_status_account_deleted
@@ -24,25 +36,43 @@ class Services
         trust.save!
       end
 
+      gmembers.each do |gmember|
+        X.services.delete_gmember(gmember)
+      end
+
       user.set_deleted_at_now
       user.set_deleted_status
       user.set_email_nil
       user.save!
     end
 
-    recount_trusts
+    X.transaction do
+      groups.each do |group|
+        recount_trusts(group)
+        recount_towers(group)
+      end
+    end
     self
   end
 
   def join_group(group, users)
     users = Array(users)
     users.map do |user|
-      if group.not_member?(user)
-        membership = X.factory.build("group_membership")
-        membership.group = group
-        membership.member = user
-        membership.start_trust_count
-        membership.save!
+      gmember = X.queries.find_gmember({ group: group, member: user, with_deleted: true })
+      if gmember.nil?
+        gmember = X.factory.build("group_membership")
+        gmember.group = group
+        gmember.member = user
+        gmember.set_status_active
+        gmember.start_trust_count
+        gmember.set_color X.generate_color
+        gmember.save!
+      elsif gmember.status_active?
+        # procced
+      elsif gmember.status_deleted?
+        gmember.set_status_active
+        gmember.save!
+      else fail
       end
     end
     self
@@ -52,6 +82,19 @@ class Services
     trust.set_status_old
     trust.expire_now
     trust.save!
+    self
+  end
+
+  def delete_gmember(gmember)
+    #dependant_memberships = membership.query_dependant_memberships
+    #X.transaction do
+    #  dependant_memberships.each do |m|
+    #    m.destroy!
+    #  end
+    #  membership.destroy!
+    #end
+    gmember.set_status_deleted
+    gmember.save!
     self
   end
 end

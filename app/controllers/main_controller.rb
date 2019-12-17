@@ -24,8 +24,8 @@ class MainController < ApplicationController
     @membership = X.queries.find_group_membership!(params["group_membership_id"])
     @user = @membership.member
     @group = @membership.group
-    @trusts_on = X.queries.trusts_on(@user, { order: "order_by_creation", group: @group })
-    @trusts_of = X.queries.all_trusts_of({ user: @user, order: "order_by_creation", group: @group })
+    @trusts_on = X.queries.trusts_on(@membership, { order: "order_by_creation", group: @group })
+    @trusts_of = X.queries.all_trusts_of({ group_membership: @membership, order: "order_by_creation", group: @group })
     @current_trust = @user.current_trust({ group: @group })
     if X.logged_in?(self)
       @view_manager.show("trust_for_person_link")
@@ -74,41 +74,35 @@ class MainController < ApplicationController
     case mode
     when "regular"
       X.transaction do
-        group = X.queries.find_group!(params["group_id"])
-        trustee = X.queries.find_user!(params["trustee_id"])
+        trustee = X.queries.find_gmember!(params["trustee_id"])
+        group = trustee.group
+        truster = group.query_gmember(current_user)
 
-        #X.domain.can?({ action: "create_trust", trustee: trustee, truster: current_user })
-        return redirect_to X.path_for("new_trust", { trustee: trustee }) if !group.all_members?([trustee, current_user])
+        #X.domain.can?({ action: "create_trust", trustee: trustee, truster: truster })
+        return redirect_to X.path_for("new_trust", { trustee: trustee.member }) if truster.nil?
 
-        if X.queries.supports?(current_user, trustee, group)
-          trustee_current_trust = trustee.current_trust({ group: group })
-          trustee_current_trust.set_status_old
-          trustee_current_trust.expire_now
-          trustee_current_trust.save!
-        end
-        current_trust = current_user.current_trust({ group: group })
-        if current_trust
-          current_trust.set_status_old
-          current_trust.expire_now
-          current_trust.save!
-        end
+        X.services.trust_back(trustee.current_trust) if trustee.trusting?(truster)
+        current_trust = truster.current_trust
+        X.services.trust_back(current_trust) if current_trust
+
         trust = X.factory.build("trust")
         trust.set_status_active
         trust.group = group
         trust.trustee = trustee
-        trust.truster = current_user
+        trust.truster = truster
         trust.set_reason(params["reason"])
         trust.save!
       end
     when "back"
       trust = X.queries.find_trust!(params["trust_id"])
+      group = trust.group
       X.guard("trust_back", { current_user: current_user, trust: trust })
       X.services.trust_back(trust)
-      group = trust.group
     else fail
     end
 
     X.services.recount_trusts(group)
+    X.services.recount_towers(group)
 
     redirect_to X.path_for("show_user", { user: current_user  })
   end
@@ -167,17 +161,18 @@ class MainController < ApplicationController
 
     case mode
     when "group_membership"
-      membership = X.queries.find_group_membership!(params["group_membership_id"])
-      X.guard("leave_group", { group_membership: membership, current_user: current_user })
+      gmember = X.queries.find_gmember!(params["group_membership_id"])
+      X.guard("leave_group", { group_membership: gmember, current_user: current_user })
       X.transaction do
-        trust = membership.current_trust
+        trust = gmember.current_trust
         X.services.trust_back(trust) if trust
-        membership.destroy!
+        X.services.delete_gmember(gmember)
       end
 
-      X.services.recount_trusts(membership.group)
+      X.services.recount_trusts(gmember.group)
+      X.services.recount_towers(gmember.group)
 
-      redirect_to X.path_for("show_group", { group: membership.group })
+      redirect_to X.path_for("show_group", { group: gmember.group })
     else fail
     end
   end

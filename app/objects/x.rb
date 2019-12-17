@@ -134,7 +134,7 @@ class X
     when "trust_back"
       if a.is_a?(Hash)
         if a.key?(:current_user) && a.key?(:trust)
-          ex.guard! if a[:trust].truster != a[:current_user]
+          ex.guard! if a[:trust].truster.member != a[:current_user]
         else fail
         end
       else fail

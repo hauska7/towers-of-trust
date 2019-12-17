@@ -10,7 +10,7 @@
             <% if @view_manager.show?("somebody_profile_title")  %>
               <%= X.t("somebody_profile") %>
             <% end %>
-            <%= link_to @user.present("user"), X.path_for("show_user", { user: @user }) %>
+            <%= link_to @user.present, X.path_for("show_user", { user: @user }) %>
           </h2>
           <table class="table">
             <thead>
@@ -36,6 +36,7 @@
               <thead>
                 <tr>
                   <th scope="col"><%= X.t("group") %></th>
+                  <th><%= X.t("group_membership") %></th>
                   <th><%= X.t("trustee") %></th>
                   <th><%= X.t("tower_of_trust") %></th>
                   <th><%= X.t("action") %></th>
@@ -45,16 +46,19 @@
                 <% @memberships.each do |membership| %>
                   <tr>
                     <td>
-                      <%= link_to membership.present_as_group, X.path_for("show_group_membership", { group_membership: membership }) %>
+                      <%= link_to membership.present("group"), X.path_for("show_group", { group: membership.group }) %>
+                    </td>
+                    <td>
+                      <%= link_to X.t("group_membership_instance"), X.path_for("show_group_membership", { group_membership: membership }) %>
                     </td>
                     <td>
                       <% if membership.trustee  %>
-                        <%= link_to membership.trustee.present("user"), X.path_for("show_user", { user: membership.trustee }) %>
+                        <%= link_to membership.trustee.present, X.path_for("show_user", { user: membership.trustee }) %>
                       <% end %>
                     </td>
                     <% if membership.tower  %>
                       <td bgcolor="<%= membership.tower.color %>">
-                        <%= link_to membership.tower.present("tower"), X.path_for("show_user", { user: membership.tower }) %>
+                        <%= link_to membership.tower.present("tower"), X.path_for("show_group_membership", { group_membership: membership.tower }) %>
                       </td>
                     <% else %>
                       <td>
