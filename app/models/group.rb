@@ -8,7 +8,7 @@ class Group < ApplicationRecord
     end
    end
 
-  scope :order_by_members_count, -> {  } #todo
+  scope :order_by_members_count, -> { order(members_count: :desc) }
 
   validates :name, presence: true
 
@@ -39,6 +39,11 @@ class Group < ApplicationRecord
 
   def set_name(name)
     self.name = name
+    self
+  end
+
+  def set_members_count(members_count)
+    self.members_count = members_count
     self
   end
 

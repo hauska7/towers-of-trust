@@ -146,6 +146,7 @@ class MainController < ApplicationController
       @group = X.factory.build("group")
       @group.moderator = current_user
       @group.set_name(params["group"]["name"])
+      @group.set_members_count(0)
       if @group.save
         redirect_to X.path_for("show_group", { group: @group })
       else
@@ -175,6 +176,7 @@ class MainController < ApplicationController
 
       X.services.recount_trusts(gmember.group)
       X.services.recount_towers(gmember.group)
+      X.services.recount_group_gmembers(gmember.group)
 
       redirect_to X.path_for("show_group", { group: gmember.group })
     else fail

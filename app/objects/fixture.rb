@@ -26,6 +26,7 @@ class Fixture
       result = X.factory.build("group")
       result.set_name("The Group")
       result.moderator = get("donald")
+      result.set_members_count(0)
       result.save!
     else fail
     end

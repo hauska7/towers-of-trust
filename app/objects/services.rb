@@ -19,6 +19,11 @@ class Services
     end
   end
 
+  def recount_group_gmembers(group)
+    group.members_count = X.queries.count_gmembers(group)
+    group.save!
+  end
+
   def delete_account(user)
     gmembers = user.query_gmembers
 
@@ -49,6 +54,7 @@ class Services
       gmembers.map(&:group).each do |group|
         recount_trusts(group)
         recount_towers(group)
+        recount_group_gmembers(group)
       end
     end
     self
@@ -56,24 +62,28 @@ class Services
 
   def join_group(group, users)
     users = Array(users)
-    users.map do |user|
-      gmember = X.queries.find_gmember({ group: group, member: user, with_deleted: true })
-      if gmember.nil?
-        gmember = X.factory.build("gmember")
-        gmember.group = group
-        gmember.member = user
-        gmember.set_status_active
-        gmember.start_trust_count
-        gmember.set_color X.generate_color
-        gmember.save!
-      elsif gmember.status_active?
-        # procced
-      elsif gmember.status_deleted?
-        gmember.tower = nil
-        gmember.set_status_active
-        gmember.save!
-      else fail
+    X.transaction do
+      users.map do |user|
+        gmember = X.queries.find_gmember({ group: group, member: user, with_deleted: true })
+        if gmember.nil?
+          gmember = X.factory.build("gmember")
+          gmember.group = group
+          gmember.member = user
+          gmember.set_status_active
+          gmember.start_trust_count
+          gmember.set_color X.generate_color
+          gmember.save!
+        elsif gmember.status_active?
+          # procced
+        elsif gmember.status_deleted?
+          gmember.tower = nil
+          gmember.set_status_active
+          gmember.save!
+        else fail
+        end
       end
+
+      recount_group_gmembers(group)
     end
     self
   end

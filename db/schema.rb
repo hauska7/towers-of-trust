@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_17_093526) do
+ActiveRecord::Schema.define(version: 2019_12_17_133547) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 2019_12_17_093526) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "moderator_id", null: false
+    t.integer "members_count", null: false
     t.index ["moderator_id"], name: "index_groups_on_moderator_id"
   end
 

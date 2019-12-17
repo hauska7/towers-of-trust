@@ -118,6 +118,10 @@ class Queries
     end
   end
 
+  def count_gmembers(group)
+    group.gmembers.active.count
+  end
+
   def tower_from_trust(a)
     if a.is_a?(Hash)
       if a.key?(:gmember)
