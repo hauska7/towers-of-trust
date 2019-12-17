@@ -3,7 +3,7 @@ class GroupMembership < ApplicationRecord
   belongs_to :member, class_name: "User"
   belongs_to :tower, class_name: "GroupMembership", optional: true
 
-  has_many :memmberships_in_this_tower, class_name: "GroupMembership", foreign_key: "tower_id"
+  has_many :gmembers_in_this_tower, class_name: "GroupMembership", foreign_key: "tower_id"
 
   validates :trust_count, presence: true
 
@@ -15,15 +15,11 @@ class GroupMembership < ApplicationRecord
   end
 
   def current_trust
-    X.queries.current_trust({ group_membership: self })
+    X.queries.current_trust({ gmember: self })
   end
 
   def trustee
-    X.queries.trustee({ group_membership: self })
-  end
-
-  def query_dependant_memberships
-    X.queries.dependant_group_memberships(self)
+    X.queries.trustee({ gmember: self })
   end
 
   def status_active?

@@ -5,7 +5,7 @@ class Factory
       User.new
     when "group"
       Group.new
-    when "group_membership"
+    when "gmember"
       GroupMembership.new
     when "trust"
       Trust.new

@@ -4,8 +4,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable #, :confirmable
   
-  has_many :group_memberships, foreign_key: "member_id"
-  has_many :participating_groups, class_name: "Group", through: "group_memberships", source: "group"
+  has_many :gmembers, class_name: "GroupMembership", foreign_key: "member_id"
+  has_many :participating_groups, class_name: "Group", through: "gmembers", source: "group"
   has_many :moderating_groups, class_name: "Group", foreign_key: "moderator_id"
 
   validates :full_name, presence: true
@@ -27,17 +27,13 @@ class User < ApplicationRecord
   end
 
   def query_gmembers(a = {})
-    query_group_memberships(a)
+    a[:member] = self
+    X.queries.gmembers(a)
   end
 
-  def query_group_memberships(a)
+  def gmember(a)
     a[:member] = self
-    X.queries.group_memberships(a)
-  end
-
-  def group_membership(a)
-    a[:member] = self
-    X.queries.find_group_membership(a)
+    X.queries.find_gmember(a)
   end
 
   def dev_init

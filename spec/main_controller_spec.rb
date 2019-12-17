@@ -127,7 +127,7 @@ RSpec.describe MainController, type: :controller do
 
     expect(group.all_members?([the_spirit])).to be false
 
-    post :do_create, params: { mode: "group_membership", group_id: group.id }
+    post :do_create, params: { mode: "gmember", group_id: group.id }
 
     expect(group.reload.member?(the_spirit)).to be true
   end
@@ -143,7 +143,7 @@ RSpec.describe MainController, type: :controller do
 
     gmember = group.query_gmember(the_spirit) || fail
 
-    post :do_destroy, params: { mode: "group_membership", group_membership_id: gmember.id }
+    post :do_destroy, params: { mode: "gmember", gmember_id: gmember.id }
 
     expect(group.reload.member?(the_spirit)).to be false
   end

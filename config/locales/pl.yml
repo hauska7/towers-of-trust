@@ -40,5 +40,5 @@ pl:
   your_profile: "Twoj profil"
   somebody_profile: "Profil"
   in_group: "w"
-  group_membership: "Profil w grupie"
-  group_membership_instance: "Szczegoly"
+  gmemmber: "Profil w grupie"
+  gmember_instance: "Szczegoly"

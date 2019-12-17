@@ -125,8 +125,8 @@ class X
       fail unless nice_env?
     when "leave_group"
       if a.is_a?(Hash)
-        if a.key?(:current_user) && a.key?(:group_membership)
-          ex.guard! if a[:group_membership].member != a[:current_user]
+        if a.key?(:current_user) && a.key?(:gmember)
+          ex.guard! if a[:gmember].member != a[:current_user]
         else fail
         end
       else fail

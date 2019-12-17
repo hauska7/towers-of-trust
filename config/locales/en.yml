@@ -43,5 +43,5 @@ en:
   your_profile: "Your profile"
   somebody_profile: "Person"
   in_group: "in"
-  group_membership: "Person in group"
-  group_membership_instance: "Details"
+  gmember: "Person in group"
+  gmember_instance: "Details"

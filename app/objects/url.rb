@@ -26,8 +26,8 @@ class Url
     when "show_group"
       custom_options = { controller: "main", action: "show_group", group_id: a[:group].id }
       X.rails_url_for(custom_options.merge(options))
-    when "show_group_membership"
-      custom_options = { controller: "main", action: "show_group_membership", group_membership_id: a[:group_membership].id }
+    when "show_gmember"
+      custom_options = { controller: "main", action: "show_gmember", gmember_id: a[:gmember].id }
       X.rails_url_for(custom_options.merge(options))
     when "do_trust_regular"
       custom_options = { controller: "main", action: "do_trust", mode: "regular", trustee_id: a[:trustee].id }
@@ -47,10 +47,10 @@ class Url
       custom_options = { controller: "main", action: "do_create", mode: "group" }
       X.rails_url_for(custom_options.merge(options))
     when "do_join_group"
-      custom_options = { controller: "main", action: "do_create", mode: "group_membership", group_id: a[:group].id }
+      custom_options = { controller: "main", action: "do_create", mode: "gmember", group_id: a[:group].id }
       X.rails_url_for(custom_options.merge(options))
     when "do_leave_group"
-      custom_options = { controller: "main", action: "do_destroy", mode: "group_membership", group_membership_id: a[:group_membership].id  }
+      custom_options = { controller: "main", action: "do_destroy", mode: "gmember", gmember_id: a[:gmember].id  }
       X.rails_url_for(custom_options.merge(options))
     else fail
     end

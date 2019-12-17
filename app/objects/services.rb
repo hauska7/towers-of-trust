@@ -1,42 +1,41 @@
 class Services
   def recount_trusts(group)
     X.transaction do
-      group.query_memberships.each do |membership|
-        trust_count = X.queries.count_trust(membership)
-        membership.trust_count = trust_count
-        membership.save!
+      group.query_gmembers.each do |gmember|
+        trust_count = X.queries.count_trust(gmember)
+        gmember.trust_count = trust_count
+        gmember.save!
       end
     end
   end
 
   def recount_towers(group)
     X.transaction do
-      group.query_memberships.each do |membership|
-        tower = X.queries.tower_from_trust({ group_membership: membership })
-        membership.tower = tower
-        membership.save!
+      group.query_gmembers.each do |gmember|
+        tower = X.queries.tower_from_trust({ gmember: gmember })
+        gmember.tower = tower
+        gmember.save!
       end
     end
   end
 
   def delete_account(user)
+    gmembers = user.query_gmembers
+
     X.transaction do
-      trusts_on = X.queries.trusts_on(user)
-      trusts_of = X.queries.all_trusts_of({ user: user })
-      gmembers = user.query_gmembers
-      groups = gmembers.map(&:group)
-
-      trusts_on.each do |trust|
-        trust.set_status_account_deleted
-        trust.save!
-      end
-
-      trusts_of.each do |trust|
-        trust.set_status_account_deleted
-        trust.save!
-      end
-
       gmembers.each do |gmember|
+        trusts_on = X.queries.trusts_on(gmember, { group: gmember.group })
+        trusts_of = X.queries.trusts_of({ gmember: gmember })
+
+        trusts_on.each do |trust|
+          trust.set_status_account_deleted
+          trust.save!
+        end
+        trusts_of.each do |trust|
+          trust.set_status_account_deleted
+          trust.save!
+        end
+
         X.services.delete_gmember(gmember)
       end
 
@@ -47,7 +46,7 @@ class Services
     end
 
     X.transaction do
-      groups.each do |group|
+      gmembers.map(&:group).each do |group|
         recount_trusts(group)
         recount_towers(group)
       end
@@ -60,7 +59,7 @@ class Services
     users.map do |user|
       gmember = X.queries.find_gmember({ group: group, member: user, with_deleted: true })
       if gmember.nil?
-        gmember = X.factory.build("group_membership")
+        gmember = X.factory.build("gmember")
         gmember.group = group
         gmember.member = user
         gmember.set_status_active
@@ -70,6 +69,7 @@ class Services
       elsif gmember.status_active?
         # procced
       elsif gmember.status_deleted?
+        gmember.tower = nil
         gmember.set_status_active
         gmember.save!
       else fail
@@ -100,13 +100,6 @@ class Services
   end
 
   def delete_gmember(gmember)
-    #dependant_memberships = membership.query_dependant_memberships
-    #X.transaction do
-    #  dependant_memberships.each do |m|
-    #    m.destroy!
-    #  end
-    #  membership.destroy!
-    #end
     gmember.set_status_deleted
     gmember.save!
     self

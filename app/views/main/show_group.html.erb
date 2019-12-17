@@ -9,7 +9,7 @@
           <% if @view_manager.show?("join_group_button") %>
             <%= link_to X.t("join_group"), X.path_for("do_join_group", { group: @group }), method: "post", class: "btn btn-primary" %>
           <% elsif @view_manager.show?("leave_group_button") %>
-            <%= link_to X.t("leave_group"), X.path_for("do_leave_group", { group_membership: @membership }), method: "post", class: "btn btn-primary" %>
+            <%= link_to X.t("leave_group"), X.path_for("do_leave_group", { gmember: @gmember }), method: "post", class: "btn btn-primary" %>
           <% end %>
           <h3><%= X.t("members") %></h3>
           <table class="table">
@@ -17,25 +17,25 @@
               <tr>
                 <th scope="col"><%= X.t("user") %></th>
                 <th><%= X.t("tower_of_trust") %></th>
-                <th><%= X.t("group_membership") %></th>
+                <th><%= X.t("gmember") %></th>
               </tr>
             </thead>
             <tbody>
-              <% @memberships.each do |membership| %>
+              <% @gmembers.each do |gmember| %>
                 <tr>
                   <td>
-                    <%= link_to membership.present("user"), X.path_for("show_user", { user: membership.member }) %>
+                    <%= link_to gmember.present("user"), X.path_for("show_user", { user: gmember.member }) %>
                   </td>
-                  <% if membership.tower  %>
-                    <td bgcolor="<%= membership.tower.color %>">
-                      <%= link_to membership.tower.present("tower"),
-                                  X.path_for("show_group_membership", { group_membership: membership.tower }) %>
+                  <% if gmember.tower  %>
+                    <td bgcolor="<%= gmember.tower.color %>">
+                      <%= link_to gmember.tower.present("tower"),
+                                  X.path_for("show_gmember", { gmember: gmember.tower }) %>
                     </td>
                   <% else %>
                     <td></td>
                   <% end %>
                   <td>
-                    <%= link_to X.t("group_membership_instance"), X.path_for("show_group_membership", { group_membership: membership }) %>
+                    <%= link_to X.t("gmember_instance"), X.path_for("show_gmember", { gmember: gmember }) %>
                   </td>
                 </tr>
               <% end %>

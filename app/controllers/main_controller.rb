@@ -6,7 +6,7 @@ class MainController < ApplicationController
   def show_user
     @user = X.queries.find_user!(params["user_id"])
     @moderating_groups = @user.query_groups("moderating")
-    @memberships = @user.query_group_memberships({ order: "order_by_trust_count" })
+    @gmembers = @user.query_gmembers({ order: "order_by_trust_count" })
     if X.logged_in?(self)
       @view_manager.show("trust_for_person_link")
       
@@ -20,13 +20,13 @@ class MainController < ApplicationController
     @view_manager.valid
   end
 
-  def show_group_membership
-    @membership = X.queries.find_group_membership!(params["group_membership_id"])
-    @user = @membership.member
-    @group = @membership.group
-    @trusts_on = X.queries.trusts_on(@membership, { order: "order_by_creation", group: @group })
-    @trusts_of = X.queries.all_trusts_of({ group_membership: @membership, order: "order_by_creation", group: @group })
-    @current_trust = @membership.current_trust
+  def show_gmember
+    @gmember = X.queries.find_gmember!(params["gmember_id"])
+    @user = @gmember.member
+    @group = @gmember.group
+    @trusts_on = X.queries.trusts_on(@gmember, { order: "order_by_creation", group: @group })
+    @trusts_of = X.queries.trusts_of({ gmember: @gmember, order: "order_by_creation" })
+    @current_trust = @gmember.current_trust
     if X.logged_in?(self)
       @view_manager.show("trust_for_person_link")
     end
@@ -35,11 +35,11 @@ class MainController < ApplicationController
 
   def show_group
     @group = X.queries.find_group!(params["group_id"])
-    @memberships = @group.query_memberships({ order: "order_by_trust_count" })
+    @gmembers = @group.query_gmembers({ order: "order_by_trust_count" })
 
     if X.logged_in?(self)
-      @membership = X.queries.find_group_membership({ group: @group, member: current_user })
-      if @membership
+      @gmember = X.queries.find_gmember({ group: @group, member: current_user })
+      if @gmember
         @view_manager.show("leave_group_button")
       else
         @view_manager.show("join_group_button")
@@ -151,7 +151,7 @@ class MainController < ApplicationController
       else
         render :new_group
       end
-    when "group_membership"
+    when "gmember"
       group = X.queries.find_group!(params["group_id"])
       X.services.join_group(group, current_user)
       redirect_to X.path_for("show_group", { group: group })
@@ -165,9 +165,9 @@ class MainController < ApplicationController
     mode = params["mode"]
 
     case mode
-    when "group_membership"
-      gmember = X.queries.find_gmember!(params["group_membership_id"])
-      X.guard("leave_group", { group_membership: gmember, current_user: current_user })
+    when "gmember"
+      gmember = X.queries.find_gmember!(params["gmember_id"])
+      X.guard("leave_group", { gmember: gmember, current_user: current_user })
       X.transaction do
         X.services.trust_back(gmember)
         X.services.delete_gmember(gmember)
