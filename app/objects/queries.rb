@@ -86,6 +86,8 @@ class Queries
         end
       elsif a.key?(:member)
         case a[:order]
+        when nil
+          a[:member].group_memberships.active.order_by_trust_count.to_a
         when "order_by_trust_count"
           a[:member].group_memberships.active.order_by_trust_count.to_a
         else fail
@@ -131,24 +133,16 @@ class Queries
   def tower_from_trust(a)
     if a.is_a?(Hash)
       if a.key?(:group_membership)
-        supreme_leader(a[:group_membership])&.group_membership({ group: a[:group_membership].group })
+        gmember = a[:group_membership]
+        result = nil
+        tmp = current_trust({ group_membership: gmember })&.trustee
+        while !tmp.nil? && tmp != result
+          result = tmp
+          tmp = current_trust({ group_membership: result })&.trustee
+        end
+        result
       else fail
       end
-    else fail
-    end
-  end
-
-  def supreme_leader(a)
-    if a.is_a?(GroupMembership)
-      user = a.member
-      group = a.group
-      result = nil
-      tmp = user.trustee(group)
-      while !tmp.nil? && tmp != result
-        result = tmp
-        tmp = result.trustee(group)
-      end
-      result
     else fail
     end
   end

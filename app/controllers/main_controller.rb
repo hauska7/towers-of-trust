@@ -26,7 +26,7 @@ class MainController < ApplicationController
     @group = @membership.group
     @trusts_on = X.queries.trusts_on(@membership, { order: "order_by_creation", group: @group })
     @trusts_of = X.queries.all_trusts_of({ group_membership: @membership, order: "order_by_creation", group: @group })
-    @current_trust = @user.current_trust({ group: @group })
+    @current_trust = @membership.current_trust
     if X.logged_in?(self)
       @view_manager.show("trust_for_person_link")
     end
@@ -57,10 +57,16 @@ class MainController < ApplicationController
   def new_trust
     authenticate_user!
 
-    @trustee = X.queries.find_user!(params["trustee_id"])
-    trustee_groups = @trustee.query_groups("participating")
-    current_user_groups = current_user.query_groups("participating")
-    @common_groups = trustee_groups.select { |group| current_user_groups.include?(group) }
+    @trustee_user = X.queries.find_user!(params["user_id"])
+    trustee_gmembers = @trustee_user.query_gmembers
+    current_user_gmembers = current_user.query_gmembers
+    current_user_groups = current_user_gmembers.map(&:group)
+    @common = []
+    trustee_gmembers.each do |gmember|
+      if current_user_groups.include?(gmember.group)
+        @common << { trustee_gmember: gmember, group: gmember.group }
+      end
+    end
   end
 
   def do_trust
@@ -81,9 +87,8 @@ class MainController < ApplicationController
         #X.domain.can?({ action: "create_trust", trustee: trustee, truster: truster })
         return redirect_to X.path_for("new_trust", { trustee: trustee.member }) if truster.nil?
 
-        X.services.trust_back(trustee.current_trust) if trustee.trusting?(truster)
-        current_trust = truster.current_trust
-        X.services.trust_back(current_trust) if current_trust
+        X.services.trust_back(trustee) if trustee.trusting?(truster)
+        X.services.trust_back(truster)
 
         trust = X.factory.build("trust")
         trust.set_status_active
@@ -164,8 +169,7 @@ class MainController < ApplicationController
       gmember = X.queries.find_gmember!(params["group_membership_id"])
       X.guard("leave_group", { group_membership: gmember, current_user: current_user })
       X.transaction do
-        trust = gmember.current_trust
-        X.services.trust_back(trust) if trust
+        X.services.trust_back(gmember)
         X.services.delete_gmember(gmember)
       end
 

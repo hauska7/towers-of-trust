@@ -26,12 +26,12 @@
                 <% end %>
                 <td>
                   <% if @current_trust %>
-                    <%= link_to @current_trust.trustee.present, X.path_for("show_user", { user: @current_trust.trustee }) %>
+                    <%= link_to @current_trust.trustee.present("user"), X.path_for("show_group_membership", { group_membership: @current_trust.trustee }) %>
                   <% end %>
                 </td>
                 <td>
                   <% if @view_manager.show?("trust_for_person_link")  %>
-                    <%= link_to X.t("new_trust"), X.path_for("new_trust", { trustee: @membership.member }), class: "btn btn-primary" %>
+                    <%= link_to X.t("new_trust"), X.path_for("new_trust", { user: @membership.member }), class: "btn btn-primary" %>
                   <% end %>
                 </td>
               </tr>
@@ -51,7 +51,7 @@
               <% @trusts_on.each do |trust| %>
                 <tr>
                   <td>
-                    <%= link_to trust.truster.present, X.path_for("show_user", { user: trust.truster }) %>
+                    <%= link_to trust.truster.present("user"), X.path_for("show_group_membership", { group_membership: trust.truster }) %>
                   </td>
                 </tr>
               <% end %>
@@ -72,7 +72,7 @@
               <% @trusts_of.each do |trust| %>
                 <tr>
                   <td>
-                    <%= link_to trust.trustee.present, X.path_for("show_user", { user: trust.trustee }) %>
+                    <%= link_to trust.trustee.present("user"), X.path_for("show_group_membership", { group_membership: trust.trustee }) %>
                   </td>
                   <td>
                     <%= trust.present_status %>

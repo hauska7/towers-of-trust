@@ -78,10 +78,24 @@ class Services
     self
   end
 
-  def trust_back(trust)
-    trust.set_status_old
-    trust.expire_now
-    trust.save!
+  def trust_back(a)
+    if a.is_a?(Trust)
+      truster = a.truster
+    elsif a.is_a?(GroupMembership)
+      truster = a
+    else fail
+    end
+
+    X.transaction do
+      trust = truster.current_trust
+      if trust
+        truster.tower = nil
+        truster.save!
+        trust.set_status_old
+        trust.expire_now
+        trust.save!
+      end
+    end
     self
   end
 

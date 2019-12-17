@@ -22,7 +22,7 @@
               <tr>
                 <td>
                   <% if @view_manager.show?("trust_for_person_link")  %>
-                    <%= link_to X.t("new_trust"), X.path_for("new_trust", { trustee: @user }), class: "btn btn-primary" %>
+                    <%= link_to X.t("new_trust"), X.path_for("new_trust", { user: @user }), class: "btn btn-primary" %>
                   <% end %>
                 </td>
               </tr>
@@ -53,7 +53,7 @@
                     </td>
                     <td>
                       <% if membership.trustee  %>
-                        <%= link_to membership.trustee.present, X.path_for("show_user", { user: membership.trustee }) %>
+                        <%= link_to membership.trustee.present("user"), X.path_for("show_group_membership", { group_membership: membership.trustee }) %>
                       <% end %>
                     </td>
                     <% if membership.tower  %>

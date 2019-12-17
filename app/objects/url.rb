@@ -12,7 +12,7 @@ class Url
       custom_options = { controller: "main", action: "new_group" }
       X.rails_url_for(custom_options.merge(options))
     when "new_trust"
-      custom_options = { controller: "main", action: "new_trust", trustee_id: a[:trustee].id }
+      custom_options = { controller: "main", action: "new_trust", user_id: a[:user].id }
       X.rails_url_for(custom_options.merge(options))
     when "new_login"
       X.url_helpers.new_user_session_path
@@ -30,7 +30,7 @@ class Url
       custom_options = { controller: "main", action: "show_group_membership", group_membership_id: a[:group_membership].id }
       X.rails_url_for(custom_options.merge(options))
     when "do_trust_regular"
-      custom_options = { controller: "main", action: "do_trust", mode: "regular", trustee_id: a[:trustee].id, group_id: a[:group].id }
+      custom_options = { controller: "main", action: "do_trust", mode: "regular", trustee_id: a[:trustee].id }
       X.rails_url_for(custom_options.merge(options))
     when "do_trust_back"
       custom_options = { controller: "main", action: "do_trust", mode: "back", trust_id: a[:trust].id }
