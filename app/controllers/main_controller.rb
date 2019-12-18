@@ -97,6 +97,11 @@ class MainController < ApplicationController
         trust.truster = truster
         trust.set_reason(params["reason"])
         trust.save!
+
+        if trustee.tower.nil?
+          trustee.tower = trustee
+          trustee.save!
+        end
       end
     when "back"
       trust = X.queries.find_trust!(params["trust_id"])

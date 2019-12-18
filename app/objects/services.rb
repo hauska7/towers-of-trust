@@ -11,10 +11,20 @@ class Services
 
   def recount_towers(group)
     X.transaction do
-      group.query_gmembers.each do |gmember|
+      gmembers = group.query_gmembers
+      gmembers.each do |gmember|
         tower = X.queries.tower_from_trust({ gmember: gmember })
         gmember.tower = tower
         gmember.save!
+      end
+      towers = gmembers.map(&:tower).compact
+      gmembers.each do |gmember|
+        if gmember.tower.nil?
+          if towers.include?(gmember)
+            gmember.tower = gmember
+            gmember.save!
+          end
+        end
       end
     end
   end
