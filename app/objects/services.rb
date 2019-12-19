@@ -3,7 +3,9 @@ class Services
     X.transaction do
       group.query_gmembers.each do |gmember|
         trust_count = X.queries.count_trust(gmember)
+        trustee = gmember.query_trustee
         gmember.trust_count = trust_count
+        gmember.trustee = trustee
         gmember.save!
       end
     end
@@ -13,15 +15,15 @@ class Services
     X.transaction do
       gmembers = group.query_gmembers
       gmembers.each do |gmember|
-        tower = X.queries.tower_from_trust({ gmember: gmember })
-        gmember.tower = tower
+        tower_top = X.queries.tower_top_from_trust({ gmember: gmember })
+        gmember.tower_top = tower_top
         gmember.save!
       end
-      towers = gmembers.map(&:tower).compact
+      tower_tops = gmembers.map(&:tower_top).compact
       gmembers.each do |gmember|
-        if gmember.tower.nil?
-          if towers.include?(gmember)
-            gmember.tower = gmember
+        if gmember.tower_top.nil?
+          if tower_tops.include?(gmember)
+            gmember.tower_top = gmember
             gmember.save!
           end
         end
@@ -109,7 +111,8 @@ class Services
     X.transaction do
       trust = truster.current_trust
       if trust
-        truster.tower = nil
+        truster.tower_top = nil
+        truster.trustee = nil
         truster.save!
         trust.set_status_old
         trust.expire_now
@@ -123,5 +126,16 @@ class Services
     gmember.set_status_deleted
     gmember.save!
     self
+  end
+
+  def recount_everything
+    groups = X.queries.all_groups
+    groups.each do |group|
+      X.transaction do
+        recount_trusts(group)
+        recount_towers(group)
+        recount_group_gmembers(group)
+      end
+    end
   end
 end

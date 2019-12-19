@@ -27,6 +27,9 @@ class MainController < ApplicationController
     @trusts_on = X.queries.trusts_on(@gmember, { order: "order_by_creation", group: @group })
     @trusts_of = X.queries.trusts_of({ gmember: @gmember, order: "order_by_creation" })
     @current_trust = @gmember.current_trust
+
+    @tower = @gmember.query_tower_top_down
+
     if X.logged_in?(self)
       @view_manager.show("trust_for_person_link")
     end
@@ -98,8 +101,11 @@ class MainController < ApplicationController
         trust.set_reason(params["reason"])
         trust.save!
 
-        if trustee.tower.nil?
-          trustee.tower = trustee
+        truster.trustee = trustee
+        truster.save!
+
+        if trustee.tower_top.nil?
+          trustee.tower_top = trustee
           trustee.save!
         end
       end

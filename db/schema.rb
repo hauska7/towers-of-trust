@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_17_133547) do
+ActiveRecord::Schema.define(version: 2019_12_19_072521) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,12 +21,14 @@ ActiveRecord::Schema.define(version: 2019_12_17_133547) do
     t.bigint "member_id", null: false
     t.bigint "group_id", null: false
     t.integer "trust_count", null: false
-    t.bigint "tower_id"
+    t.bigint "tower_top_id"
     t.string "color", null: false
     t.string "status", null: false
+    t.bigint "trustee_id"
     t.index ["group_id"], name: "index_group_memberships_on_group_id"
     t.index ["member_id"], name: "index_group_memberships_on_member_id"
-    t.index ["tower_id"], name: "index_group_memberships_on_tower_id"
+    t.index ["tower_top_id"], name: "index_group_memberships_on_tower_top_id"
+    t.index ["trustee_id"], name: "index_group_memberships_on_trustee_id"
   end
 
   create_table "groups", force: :cascade do |t|
@@ -69,7 +71,8 @@ ActiveRecord::Schema.define(version: 2019_12_17_133547) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "group_memberships", "group_memberships", column: "tower_id"
+  add_foreign_key "group_memberships", "group_memberships", column: "tower_top_id"
+  add_foreign_key "group_memberships", "group_memberships", column: "trustee_id"
   add_foreign_key "group_memberships", "groups"
   add_foreign_key "group_memberships", "users", column: "member_id"
   add_foreign_key "groups", "users", column: "moderator_id"

@@ -122,7 +122,7 @@ class Queries
     group.gmembers.active.count
   end
 
-  def tower_from_trust(a)
+  def tower_top_from_trust(a)
     if a.is_a?(Hash)
       if a.key?(:gmember)
         gmember = a[:gmember]
@@ -133,6 +133,25 @@ class Queries
           tmp = current_trust({ gmember: result })&.trustee
         end
         result
+      else fail
+      end
+    else fail
+    end
+  end
+
+  def tower_top_down(a)
+    if a.is_a?(Hash)
+      if a.key?(:gmember)
+        gmember = a[:gmember]
+        result = []
+        tower_top = gmember.tower_top
+        current = gmember.trustee
+        while !current.nil? && current != tower_top
+          result << current
+          current = current.trustee
+        end
+        result << tower_top if tower_top
+        result.reverse
       else fail
       end
     else fail
@@ -163,7 +182,7 @@ class Queries
     end
   end
 
-  def trustee(a)
+  def trustee_from_trust(a)
     if a.is_a?(Hash)
       if a.key?(:gmember)
         current_trust(a)&.trustee

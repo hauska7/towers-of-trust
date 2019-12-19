@@ -6,57 +6,36 @@
             <%= X.t("in_group") %>
             <%= link_to @group.present, X.path_for("show_group", { group: @group }) %>
           </h2>
+          <% if @view_manager.show?("trust_for_person_link")  %>
+            <div>
+              <%= link_to X.t("new_trust"), X.path_for("new_trust", { user: @gmember.member }), class: "btn btn-primary" %>
+            </div>
+          <% end %>
           <table class="table">
             <thead>
               <tr>
                 <th><%= X.t("tower_of_trust") %></th>
-                <th><%= X.t("trustee") %></th>
-                <th><%= X.t("action") %></th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <% if @gmember.tower  %>
-                  <td bgcolor="<%= @gmember.tower.color %>">
-                    <%= link_to @gmember.tower.present("tower"), X.path_for("show_gmember", { gmember: @gmember.tower }) %>
-                  </td>
-                <% else %>
+              <% @tower.each do |tower_floor| %>
+                <tr bgcolor="<%= @gmember.tower_top.color %>">
                   <td>
+                    <%= link_to tower_floor.present("tower"), X.path_for("show_gmember", { gmember: tower_floor }) %>
                   </td>
-                <% end %>
-                <td>
-                  <% if @current_trust %>
-                    <%= link_to @current_trust.trustee.present("user"), X.path_for("show_gmember", { gmember: @current_trust.trustee }) %>
-                  <% end %>
-                </td>
-                <td>
-                  <% if @view_manager.show?("trust_for_person_link")  %>
-                    <%= link_to X.t("new_trust"), X.path_for("new_trust", { user: @gmember.member }), class: "btn btn-primary" %>
-                  <% end %>
-                </td>
-              </tr>
+                </tr>
+              <% end %>
             </tbody>
           </table>
         </div>
 
         <div>
           <h3><%= X.t("has_trust") %></h3>
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col"><%= X.t("user") %></th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @trusts_on.each do |trust| %>
-                <tr>
-                  <td>
-                    <%= link_to trust.truster.present("user"), X.path_for("show_gmember", { gmember: trust.truster }) %>
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
+          <div>
+            <% @trusts_on.each do |trust| %>
+              <%= link_to trust.truster.present("user"), X.path_for("show_gmember", { gmember: trust.truster }) %>
+            <% end %>
+          </div>
         </div>
         <div>
           <h3><%= X.t("voting_record") %></h3>
