@@ -56,9 +56,9 @@
                         <%= link_to gmember.trustee.present("user"), X.path_for("show_gmember", { gmember: gmember.trustee }) %>
                       <% end %>
                     </td>
-                    <% if gmember.tower  %>
-                      <td bgcolor="<%= gmember.tower.color %>">
-                        <%= link_to gmember.tower.present("tower"), X.path_for("show_gmember", { gmember: gmember.tower }) %>
+                    <% if gmember.tower_top  %>
+                      <td bgcolor="<%= gmember.tower_top.color %>">
+                        <%= link_to gmember.tower_top.present("tower"), X.path_for("show_gmember", { gmember: gmember.tower_top }) %>
                       </td>
                     <% else %>
                       <td>
