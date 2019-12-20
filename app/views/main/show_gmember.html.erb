@@ -25,18 +25,17 @@
                   </td>
                 </tr>
               <% end %>
+                <tr bgcolor="<%= @gmember.tower_top.color %>">
+                  <td>
+                    <% @trusts_on.each do |trust| %>
+                      <%= link_to trust.truster.present("user"), X.path_for("show_gmember", { gmember: trust.truster }) %>
+                    <% end %>
+                  </td>
+                </tr>
             </tbody>
           </table>
         </div>
 
-        <div>
-          <h3><%= X.t("has_trust") %></h3>
-          <div>
-            <% @trusts_on.each do |trust| %>
-              <%= link_to trust.truster.present("user"), X.path_for("show_gmember", { gmember: trust.truster }) %>
-            <% end %>
-          </div>
-        </div>
         <div>
           <h3><%= X.t("voting_record") %></h3>
           <table class="table">
