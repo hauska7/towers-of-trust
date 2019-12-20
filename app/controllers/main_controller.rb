@@ -29,7 +29,7 @@ class MainController < ApplicationController
     @current_trust = @gmember.current_trust
 
     @tower = @gmember.query_tower_top_down
-    @tower << gmember
+    @tower << @gmember
 
     if X.logged_in?(self)
       @view_manager.show("trust_for_person_link")
