@@ -35,7 +35,7 @@
                       <%= link_to gmember.present("group"), X.path_for("show_group", { group: gmember.group }) %>
                     </td>
                     <td>
-                      <%= link_to X.t("gmember_instance"), X.path_for("show_gmember", { gmember: gmember }) %>
+                      <%= link_to gmember.present("group"), X.path_for("show_gmember", { gmember: gmember }) %>
                     </td>
                     <% if gmember.tower_top  %>
                       <td bgcolor="<%= gmember.tower_top.color %>">
