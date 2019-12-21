@@ -12,22 +12,9 @@
             <% end %>
             <%= link_to @user.present, X.path_for("show_user", { user: @user }) %>
           </h2>
-          <table class="table">
-            <thead>
-              <tr>
-                <th><%= X.t("action") %></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <% if @view_manager.show?("trust_for_person_link")  %>
-                    <%= link_to X.t("new_trust"), X.path_for("new_trust", { user: @user }), class: "btn btn-primary" %>
-                  <% end %>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <% if @view_manager.show?("trust_for_person_link")  %>
+            <%= link_to X.t("new_trust"), X.path_for("new_trust", { user: @user }), class: "btn btn-primary" %>
+          <% end %>
         </div>
 
         <div>
@@ -37,7 +24,6 @@
                 <tr>
                   <th scope="col"><%= X.t("group") %></th>
                   <th><%= X.t("gmember") %></th>
-                  <th><%= X.t("trustee") %></th>
                   <th><%= X.t("tower_of_trust") %></th>
                   <th><%= X.t("action") %></th>
                 </tr>
@@ -50,11 +36,6 @@
                     </td>
                     <td>
                       <%= link_to X.t("gmember_instance"), X.path_for("show_gmember", { gmember: gmember }) %>
-                    </td>
-                    <td>
-                      <% if gmember.trustee  %>
-                        <%= link_to gmember.trustee.present("user"), X.path_for("show_gmember", { gmember: gmember.trustee }) %>
-                      <% end %>
                     </td>
                     <% if gmember.tower_top  %>
                       <td bgcolor="<%= gmember.tower_top.color %>">
