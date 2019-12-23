@@ -5,6 +5,7 @@ en:
   klub_dyskusyjny: "klub dyskusyjny"
   home: "Me"
   about: "About"
+  contact: "Contact"
   login: "Login"
   login_as_new_user: "New user"
   login_as_existing_user: "Login as user"
@@ -46,3 +47,5 @@ en:
   gmember: "Person in group"
   gmember_instance: "Details"
   profile_instance: "Profile"
+  klub_dyskusyjny_description: "This website allowes to gather members in groups and then allow Towers of Trust development in those groups."
+  tower_of_trust_description: "If Marry trusts Joseph and Joseph trusts John they make for a tower of trust. Then if there are also Mark and Camile and Mark trusts Camile they make for another tower of trust."

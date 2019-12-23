@@ -1,13 +1,18 @@
 <section class="text-center">                                                                                                             
   <div class="container">
     <div>
-      <h2>About</h2>
-      <p><%= link_to X.t("source_code"), X.github_url %></p>
+      <h1><%= X.t("about") %></h1>
+      <h2><%= X.t("klub_dyskusyjny") %></h2>
+      <p><%= X.t("klub_dyskusyjny_description") %></p>
+      <h2><%= X.t("tower_of_trust") %></h2>
+      <p><%= X.t("tower_of_trust_description") %></p>
+      <h2><%= X.t("source_code") %></h2>
+      <p><%= link_to nil, X.github_url %></p>
+      <h2><%= X.t("contact") %></h2>
+      <p><%= X.contact_email %></p>
     </div>
 
     <div>
-      <h2>Contact</h2>
-      <p><%= X.contact_email %></p>
     </div>
   </div>
 </section>

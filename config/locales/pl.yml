@@ -2,6 +2,7 @@ pl:
   klub_dyskusyjny: "klub dyskusyjny"
   home: "Panel"
   about: "Info"
+  contact: "Kontakt"
   login: "Login"
   login_as_new_user: "New user"
   login_as_existing_user: "Login as user"
@@ -43,3 +44,5 @@ pl:
   gmemmber: "Profil w grupie"
   gmember_instance: "Szczegoly"
   profile_instance: "Profil"
+  klub_dyskusyjny_description: "klub dyskusyjny umozliwia zakladanie grup, a w tych grupach rozwoj wiez zaufania."
+  tower_of_trust_description: "Jesli Kasia ufa Mackowi a Maciek ufa Monice to tworza oni wieze zaufania. Jesli sa rowniez Marysia i Kamil i Marysia ufa Kamilowi to tworza oni kolejna wieze zaufania."

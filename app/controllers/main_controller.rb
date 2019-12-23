@@ -110,11 +110,18 @@ class MainController < ApplicationController
           trustee.save!
         end
       end
+
+      #X.services.recount_trusts_from_trustee(previous_trustee_of_trustee)
+      #recount_trusts_for_single_gmember(trustee)
+      #X.services.recount_towers(group)
     when "back"
       trust = X.queries.find_trust!(params["trust_id"])
       group = trust.group
       X.guard("trust_back", { current_user: current_user, trust: trust })
       X.services.trust_back(trust)
+
+      #X.services.recount_trusts(group)
+      #X.services.recount_towers(group)
     else fail
     end
 
