@@ -18,7 +18,21 @@
         </div>
 
         <div>
-          <h3><%= X.t("participating_groups") %></h3>
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link <%= 'active' if @view_manager.show?('participating_groups_tab') %>"
+                 href="<%= X.path_for('show_user', { user: @user, tab: 'participating_groups' }) %>">
+                <%= X.t("participating_groups") %>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <%= 'active' if @view_manager.show?('moderating_groups_tab') %>"
+                 href="<%= X.path_for('show_user', { user: @user, tab: 'moderating_groups' }) %>">
+                <%= X.t("moderating_groups") %>
+              </a>
+            </li>
+          </ul>
+          <% if @view_manager.show?('participating_groups_tab') %>
             <table class="table">
               <thead>
                 <tr>
@@ -56,12 +70,12 @@
                 <% end %>
               </tbody>
             </table>
-        </div>
-        <div>
-          <h3><%= X.t("moderating_groups") %></h3>
+          <% end %>
+          <% if @view_manager.show?('moderating_groups_tab') %>
             <% @moderating_groups.each do |group| %>
               <%= link_to group.present, X.path_for("show_group", { group: group }) %>
             <% end %>
+          <% end %>
         </div>
       </div>
     </div>

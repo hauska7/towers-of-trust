@@ -21,13 +21,15 @@ class Url
     when "edit_registration"
       X.url_helpers.edit_user_registration_path
     when "show_user"
-      custom_options = { controller: "main", action: "show_user", user_id: a[:user].id }
+      tab = a[:tab] || "participating_groups"
+      custom_options = { controller: "main", action: "show_user", user_id: a[:user].id, tab: tab }
       X.rails_url_for(custom_options.merge(options))
     when "show_group"
       custom_options = { controller: "main", action: "show_group", group_id: a[:group].id }
       X.rails_url_for(custom_options.merge(options))
     when "show_gmember"
-      custom_options = { controller: "main", action: "show_gmember", gmember_id: a[:gmember].id }
+      tab = a[:tab] || "tower_of_trust"
+      custom_options = { controller: "main", action: "show_gmember", gmember_id: a[:gmember].id, tab: tab }
       X.rails_url_for(custom_options.merge(options))
     when "do_trust_regular"
       custom_options = { controller: "main", action: "do_trust", mode: "regular", trustee_id: a[:trustee].id }
