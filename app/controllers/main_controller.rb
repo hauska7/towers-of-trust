@@ -47,7 +47,7 @@ class MainController < ApplicationController
       @trusts_on = X.queries.trusts_on(@gmember, { order: "order_by_creation", group: @group })
 
       @tower = @gmember.query_tower_top_down
-      @tower << @gmember if !@tower.include?(@gmember)
+      @tower << @gmember if !@tower.empty? && !@tower.include?(@gmember)
 
       if X.logged_in?(self)
         @view_manager.show("trust_for_person_link")
