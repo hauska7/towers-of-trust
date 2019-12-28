@@ -65,6 +65,21 @@ class User < ApplicationRecord
     self
   end  
 
+  def set_cancel_account_on(date)
+    self.cancel_account_on = date
+    self
+  end
+
+  def set_half_year_account
+    set_cancel_account_on(X.time_in_half_a_year) unless half_year_account?
+    self
+  end
+
+  def unset_half_year_account
+    set_cancel_account_on(nil) if half_year_account?
+    self
+  end
+
   def set_deleted_status
     self.status = "deleted"
     self
@@ -90,6 +105,10 @@ class User < ApplicationRecord
 
   def email_required?
     active?
+  end
+
+  def half_year_account?
+    !cancel_account_on.nil?
   end
                     
   def inactive_message   

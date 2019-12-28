@@ -153,4 +153,12 @@ class X
   
     "##{number1}#{number2}#{number3}"
   end
+
+  def self.cast_flag(value)
+    ActiveModel::Type::Boolean.new.cast(value)
+  end
+
+  def self.time_in_half_a_year
+    6.months.from_now
+  end
 end
