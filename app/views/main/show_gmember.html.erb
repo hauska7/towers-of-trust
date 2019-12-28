@@ -31,13 +31,14 @@
               <thead>
               </thead>
               <tbody>
-                <% @tower.each do |tower_floor| %>
-                  <tr bgcolor="<%= @gmember.tower_top.color %>">
-                    <td>
-                      <%= link_to tower_floor.present("tower"), X.path_for("show_gmember", { gmember: tower_floor }) %>
-                    </td>
-                  </tr>
-                <% end %>
+                <% if @gmamber.tower_top %>
+                  <% @tower.each do |tower_floor| %>
+                    <tr bgcolor="<%= @gmember.tower_top.color %>">
+                      <td>
+                        <%= link_to tower_floor.present("tower"), X.path_for("show_gmember", { gmember: tower_floor }) %>
+                      </td>
+                    </tr>
+                  <% end %>
                   <tr bgcolor="<%= @gmember.tower_top.color %>">
                     <td>
                       <% @trusts_on.each do |trust| %>
@@ -45,6 +46,7 @@
                       <% end %>
                     </td>
                   </tr>
+                <% end %>
               </tbody>
             </table>
           <% end %>
