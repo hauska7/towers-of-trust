@@ -47,6 +47,22 @@ class X
     translations.get(key)
   end
 
+  def self.get_pagination(a)
+    if a.is_a?(ActionController::Parameters)
+      result = Pagination.new
+      offset = a["offset"].presence || 0
+      offset = offset.to_i
+      page_size = a["page_size"].presence || 30
+      page_size = page_size.to_i
+      total_count = nil
+      result.set(offset, page_size, total_count)
+      result
+    elsif a == "dont"
+      Pagination.new.unset_paginate
+    else fail
+    end
+  end
+
   def self.logged_in?(controller)
     !controller.current_user.nil?
   end

@@ -52,3 +52,5 @@ pl:
   klub_dyskusyjny_description: "klub dyskusyjny umozliwia zakladanie grup, a w tych grupach rozwoj wiez zaufania."
   tower_of_trust_description: "Jesli Kasia ufa Mackowi a Maciek ufa Monice to tworza oni wieze zaufania. Jesli sa rowniez Marysia i Kamil i Marysia ufa Kamilowi to tworza oni kolejna wieze zaufania."
   delete_account_after_half_year: "Automatycznie usun konto po pol roku"
+  previous_page: "Poprzednia"
+  next_page: "Nastepna"

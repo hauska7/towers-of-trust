@@ -55,3 +55,5 @@ en:
   klub_dyskusyjny_description: "This website allowes to gather members in groups and then allow Towers of Trust development in those groups."
   tower_of_trust_description: "If Marry trusts Joseph and Joseph trusts John they make for a tower of trust. Then if there are also Mark and Camile and Mark trusts Camile they make for another tower of trust."
   delete_account_after_half_year: "Delete my account after half a year"
+  previous_page: "Previous"
+  next_page: "Next"

@@ -1,7 +1,8 @@
 class Services
   def recount_trusts(group)
     X.transaction do
-      group.query_gmembers.each do |gmember|
+      gmembers = group.query_gmembers({ pagination: X.get_pagination("dont") })
+      gmembers.each do |gmember|
         trust_count = X.queries.count_trust(gmember)
         trustee = gmember.query_trustee
         gmember.trust_count = trust_count
@@ -13,7 +14,7 @@ class Services
 
   def recount_towers(group)
     X.transaction do
-      gmembers = group.query_gmembers
+      gmembers = group.query_gmembers({ pagination: X.get_pagination("dont") })
       gmembers.each do |gmember|
         tower_top = X.queries.tower_top_from_trust({ gmember: gmember })
         gmember.tower_top = tower_top

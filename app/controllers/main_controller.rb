@@ -72,7 +72,8 @@ class MainController < ApplicationController
 
   def show_group
     @group = X.queries.find_group!(params["group_id"])
-    @gmembers = @group.query_gmembers({ order: "order_by_trust_count" })
+    @pagination = X.get_pagination(params)
+    @gmembers = @group.query_gmembers({ order: "order_by_trust_count", pagination: @pagination })
 
     if X.logged_in?(self)
       @gmember = X.queries.find_gmember({ group: @group, member: current_user })

@@ -18,5 +18,18 @@ module KlubDyskusyjny
 
     config.i18n.available_locales = %w(en pl)
     config.middleware.use HttpAcceptLanguage::Middleware
+
+    module ActiveRecordRelationExtensions
+      def paginate(pagination)
+        if !pagination.paginate?
+          self
+        else
+          total_count = count
+          pagination.set_total_count(total_count)
+          offset(pagination.offset).limit(pagination.page_size)
+        end
+      end
+    end
+    ActiveRecord::Relation.include(ActiveRecordRelationExtensions)
   end
 end

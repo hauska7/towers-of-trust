@@ -71,9 +71,9 @@ class Queries
       if a.key?(:group)
         case a[:order]
         when nil
-          a[:group].gmembers.active.order_by_trust_count.to_a
+          a[:group].gmembers.active.order_by_trust_count.paginate(a[:pagination]).to_a
         when "order_by_trust_count"
-          a[:group].gmembers.active.order_by_trust_count.to_a
+          a[:group].gmembers.active.order_by_trust_count.paginate(a[:pagination]).to_a
         else fail
         end
       elsif a.key?(:member)
