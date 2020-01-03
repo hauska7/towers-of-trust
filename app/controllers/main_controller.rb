@@ -121,9 +121,6 @@ class MainController < ApplicationController
         block_trust_action: block_trust_action,
         unblock_trust_action: unblock_trust_action
       }
-      item[:current_user_trust] = current_user_trust if current_user_trust
-      item[:user_trust] = user_trust if user_trust 
-      item[:current_user_trust_block] = current_user_trust_block if current_user_trust_block
       @items << item
     end
   end

@@ -35,7 +35,7 @@ class Url
       custom_options = { controller: "main", action: "do_trust", mode: "regular", user_id: a[:user].id, group_id: a[:group].id }
       X.rails_url_for(custom_options.merge(options))
     when "do_trust_back"
-      custom_options = { controller: "main", action: "do_trust", mode: "back", user_id: a[:user].id, group_id: a[:group_id].id }
+      custom_options = { controller: "main", action: "do_trust", mode: "back", user_id: a[:user].id, group_id: a[:group].id }
       X.rails_url_for(custom_options.merge(options))
     when "do_block_trust"
       custom_options = { controller: "main", action: "do_trust", mode: "block", user_id: a[:user].id, group_id: a[:group].id }
