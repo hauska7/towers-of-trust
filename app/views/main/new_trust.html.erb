@@ -1,6 +1,6 @@
 <section class="text-center">                                                                                                             
   <div class="container">
-    <h2><%= @trustee_user.present %></h2>
+    <h2><%= @user.present %></h2>
     <div>
       <table class="table">
         <thead>
@@ -10,16 +10,36 @@
           </tr>
         </thead>
         <tbody>
-          <% @common.each do |common| %>
+          <% @items.each do |item| %>
             <tr>
               <td>
-                <%= link_to common[:group].present, X.path_for("show_group", { group: common[:group] }) %>
+                <%= link_to item[:group].present, X.path_for("show_group", { group: item[:group] }) %>
               </td>
               <td>
-                <%= link_to X.t("trust"),
-                            X.path_for("do_trust_regular", { trustee: common[:trustee_gmember] }),
-                            method: "post",
-                            class: "btn btn-primary" %>
+                <% if item[:trust_action]  %>
+                  <%= link_to X.t("trust"),
+                              X.path_for("do_trust_regular", { user: @user, group: item[:group] }),
+                              method: "post",
+                              class: "btn btn-primary" %>
+                <% end %>
+                <% if item[:trust_back_action]  %>
+                  <%= link_to X.t("trust_back"),
+                              X.path_for("do_trust_back", { user: @user, group: item[:group] }),
+                              method: "post",
+                              class: "btn btn-primary" %>
+                <% end %>
+                <% if item[:block_trust_action]  %>
+                  <%= link_to X.t("block_trust"),
+                              X.path_for("do_block_trust", { user: @user, group: item[:group] }),
+                              method: "post",
+                              class: "btn btn-primary" %>
+                <% end %>
+                <% if item[:unblock_trust_action]  %>
+                  <%= link_to X.t("unblock_trust"),
+                              X.path_for("do_unblock_trust", { user: @user, group: item[:group] }),
+                              method: "post",
+                              class: "btn btn-primary" %>
+                <% end %>
               </td>
             </tr>
           <% end %>

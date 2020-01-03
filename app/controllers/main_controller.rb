@@ -9,11 +9,10 @@ class MainController < ApplicationController
       @user = X.queries.find_user!(params["user_id"])
       @gmembers = @user.query_gmembers({ order: "order_by_trust_count" })
       if X.logged_in?(self)
-        @view_manager.show("trust_for_person_link")
+        @view_manager.show("action_link")
         
         if @user == current_user
           @view_manager.show("your_profile_title")
-          @view_manager.show("trust_back_buttons")
         else
           @view_manager.show("somebody_profile_title")
         end
@@ -24,7 +23,7 @@ class MainController < ApplicationController
       @user = X.queries.find_user!(params["user_id"])
       @moderating_groups = @user.query_groups("moderating")
       if X.logged_in?(self)
-        @view_manager.show("trust_for_person_link")
+        @view_manager.show("action_link")
         
         if @user == current_user
           @view_manager.show("your_profile_title")
@@ -50,7 +49,7 @@ class MainController < ApplicationController
       @tower << @gmember if !@tower.empty? && !@tower.include?(@gmember)
 
       if X.logged_in?(self)
-        @view_manager.show("trust_for_person_link")
+        @view_manager.show("action_link")
       end
       @view_manager.show("tower_of_trust_tab")
       @view_manager.valid
@@ -62,7 +61,7 @@ class MainController < ApplicationController
       @current_trust = @gmember.current_trust
 
       if X.logged_in?(self)
-        @view_manager.show("trust_for_person_link")
+        @view_manager.show("action_link")
       end
       @view_manager.show("trust_history_tab")
       @view_manager.valid
@@ -95,15 +94,37 @@ class MainController < ApplicationController
   def new_trust
     authenticate_user!
 
-    @trustee_user = X.queries.find_user!(params["user_id"])
-    trustee_gmembers = @trustee_user.query_gmembers
+    @user = X.queries.find_user!(params["user_id"])
+    user_gmembers = @user.query_gmembers
+    user_groups = user_gmembers.map(&:group)
     current_user_gmembers = current_user.query_gmembers
     current_user_groups = current_user_gmembers.map(&:group)
-    @common = []
-    trustee_gmembers.each do |gmember|
-      if current_user_groups.include?(gmember.group)
-        @common << { trustee_gmember: gmember, group: gmember.group }
-      end
+    @items = []
+    common_groups = user_groups & current_user_groups
+    common_groups.each do |group|
+      user_gmember = user_gmembers.find { |gmember| gmember.group == group }
+      current_user_gmember = current_user_gmembers.find { |gmember| gmember.group == group }
+      current_user_trust_block = X.queries.query("trust_block", { trustee: current_user_gmember, truster: user_gmember })
+      user_trust_block = X.queries.query("trust_block", { trustee: user_gmember, truster: current_user_gmember })
+      current_user_trust = current_user_gmember.current_trust
+      user_trust = user_gmember.current_trust
+
+      trust_action = (current_user_trust.nil? || current_user_trust.trustee != user_gmember) && user_trust_block.nil?
+      trust_back_action = !current_user_trust.nil? && current_user_trust.trustee == user_gmember
+      block_trust_action = !user_trust.nil? && user_trust.trustee == current_user_gmember
+      unblock_trust_action = !current_user_trust_block.nil?
+
+      item = {
+        group: group,
+        trust_action: trust_action,
+        trust_back_action: trust_back_action,
+        block_trust_action: block_trust_action,
+        unblock_trust_action: unblock_trust_action
+      }
+      item[:current_user_trust] = current_user_trust if current_user_trust
+      item[:user_trust] = user_trust if user_trust 
+      item[:current_user_trust_block] = current_user_trust_block if current_user_trust_block
+      @items << item
     end
   end
 
@@ -117,14 +138,25 @@ class MainController < ApplicationController
 
     case mode
     when "regular"
+      user = X.queries.find_user!(params["user_id"])
+      group = X.queries.find_group!(params["group_id"])
+      trustee = group.query_gmember(user)
+      truster = group.query_gmember(current_user)
+
+      # unless X.domain.can?({ action: "create_trust", trustee: trustee, truster: truster })
+      #   return redirect_to X.path_for("new_trust", { trustee: trustee_user })
+      # end
+
+      if trustee.nil? || truster.nil?
+        return redirect_to X.path_for("new_trust", { user: user })
+      end
+
+      trust_block = X.queries.query("trust_block", { trustee: trustee, truster: truster })
+      if trust_block
+        return redirect_to X.path_for("new_trust", { user: user })
+      end
+
       X.transaction do
-        trustee = X.queries.find_gmember!(params["trustee_id"])
-        group = trustee.group
-        truster = group.query_gmember(current_user)
-
-        #X.domain.can?({ action: "create_trust", trustee: trustee, truster: truster })
-        return redirect_to X.path_for("new_trust", { trustee: trustee.member }) if truster.nil?
-
         X.services.trust_back(trustee) if trustee.trusting?(truster)
         X.services.trust_back(truster)
 
@@ -144,25 +176,55 @@ class MainController < ApplicationController
           trustee.save!
         end
       end
-
-      #X.services.recount_trusts_from_trustee(previous_trustee_of_trustee)
-      #recount_trusts_for_single_gmember(trustee)
-      #X.services.recount_towers(group)
     when "back"
-      trust = X.queries.find_trust!(params["trust_id"])
-      group = trust.group
+      user = X.queries.find_user!(params["user_id"])
+      group = X.queries.find_group!(params["group_id"])
+      current_gmember = group.query_gmember(current_user)
+
+      trust = current_gmember.current_trust
+      if trust.nil? || trust.trustee.member != user
+        return redirect_to X.path_for("new_trust", { user: user })
+      end
+
       X.guard("trust_back", { current_user: current_user, trust: trust })
       X.services.trust_back(trust)
+    when "block"
+      user = X.queries.find_user!(params["user_id"])
+      group = X.queries.find_group!(params["group_id"])
+      user_gmember = group.query_gmember(user)
 
-      #X.services.recount_trusts(group)
-      #X.services.recount_towers(group)
+      trust = user_gmember.current_trust
+      if trust.nil? || trust.trustee.member != current_user
+        return redirect_to X.path_for("new_trust", { user: user })
+      end
+
+      trust.truster.trustee = nil
+      trust.truster.tower_top = nil
+      trust.truster.save!
+      trust.set_status_block
+      trust.save!
+    when "unblock"
+      user = X.queries.find_user!(params["user_id"])
+      group = X.queries.find_group!(params["group_id"])
+      user_gmember = group.query_gmember(user)
+      current_gmember = group.query_gmember(current_user)
+
+      trust_block = X.queries.query("trust_block", { trustee: current_gmember, truster: user_gmember })
+      if trust_block.nil?
+        return redirect_to X.path_for("new_trust", { user: user })
+      end
+
+      X.guard("trust_unblock", { current_user: current_user, trust_block: trust_block })
+
+      trust_block.set_status_old
+      trust_block.save!
     else fail
     end
 
     X.services.recount_trusts(group)
     X.services.recount_towers(group)
 
-    redirect_to X.path_for("show_user", { user: current_user  })
+    redirect_to X.path_for("show_user", { user: current_user })
   end
 
   def do_dev_helper
@@ -222,10 +284,7 @@ class MainController < ApplicationController
     when "gmember"
       gmember = X.queries.find_gmember!(params["gmember_id"])
       X.guard("leave_group", { gmember: gmember, current_user: current_user })
-      X.transaction do
-        X.services.trust_back(gmember)
-        X.services.delete_gmember(gmember)
-      end
+      X.services.delete_gmember(gmember)
 
       X.services.recount_trusts(gmember.group)
       X.services.recount_towers(gmember.group)

@@ -7,6 +7,7 @@ class Group < ApplicationRecord
       where(group_memberships: { status: "active" })
     end
    end
+  has_many :trusts
 
   scope :order_by_members_count, -> { order(members_count: :desc) }
 

@@ -155,6 +155,14 @@ class X
         end
       else fail
       end
+    when "trust_unblock"
+      if a.is_a?(Hash)
+        if a.key?(:current_user) && a.key?(:trust_block)
+          ex.guard! if a[:trust_block].trustee.member != a[:current_user]
+        else fail
+        end
+      else fail
+      end
     else fail
     end
   end

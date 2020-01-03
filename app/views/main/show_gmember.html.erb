@@ -6,7 +6,7 @@
             <%= X.t("in_group") %>
             <%= link_to @group.present, X.path_for("show_group", { group: @group }) %>
           </h2>
-          <% if @view_manager.show?("trust_for_person_link")  %>
+          <% if @view_manager.show?("action_link")  %>
             <div>
               <%= link_to X.t("new_trust"), X.path_for("new_trust", { user: @gmember.member }), class: "btn btn-primary" %>
             </div>

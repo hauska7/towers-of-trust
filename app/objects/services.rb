@@ -42,19 +42,7 @@ class Services
 
     X.transaction do
       gmembers.each do |gmember|
-        trusts_on = X.queries.trusts_on(gmember, { group: gmember.group })
-        trusts_of = X.queries.trusts_of({ gmember: gmember })
-
-        trusts_on.each do |trust|
-          trust.set_status_account_deleted
-          trust.save!
-        end
-        trusts_of.each do |trust|
-          trust.set_status_account_deleted
-          trust.save!
-        end
-
-        X.services.delete_gmember(gmember)
+        delete_gmember(gmember)
       end
 
       user.set_deleted_at_now
@@ -89,7 +77,7 @@ class Services
         elsif gmember.status_active?
           # procced
         elsif gmember.status_deleted?
-          gmember.tower = nil
+          gmember.tower_top = nil
           gmember.set_status_active
           gmember.save!
         else fail
@@ -124,6 +112,18 @@ class Services
   end
 
   def delete_gmember(gmember)
+    trusts_on = X.queries.trusts_on(gmember, { group: gmember.group })
+    trusts_of = X.queries.trusts_of({ gmember: gmember })
+
+    trusts_on.each do |trust|
+      trust.set_status_old
+      trust.save!
+    end
+    trusts_of.each do |trust|
+      trust.set_status_old
+      trust.save!
+    end
+
     gmember.set_status_deleted
     gmember.save!
     self

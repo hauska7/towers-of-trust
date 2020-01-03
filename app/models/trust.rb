@@ -4,7 +4,8 @@ class Trust < ApplicationRecord
   belongs_to :group, class_name: "Group"
 
   scope :active, -> { where(status: "active") }
-  scope :valid, -> { where.not(status: "account_deleted") }
+  scope :valid, -> { where.not(status: ["account_deleted", "block"]) }
+  scope :block, -> { where(status: "block") }
   scope :with_trustees, ->(trustees) { where(trustee: trustees) }
   scope :with_trusters, ->(trusters) { where(truster: trusters) }
   scope :with_truster_users, ->(users) { joins(:truster).where(truster: { member: users }) }
@@ -17,12 +18,21 @@ class Trust < ApplicationRecord
     status == "active"
   end
 
+  def status_blocked?
+    status == "block"
+  end
+
   def expired?
     !expired_at.nil?
   end
 
   def set_status_old
     self.status = "old"
+    self
+  end
+
+  def set_status_block
+    self.status = "block"
     self
   end
 

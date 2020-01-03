@@ -12,7 +12,7 @@
             <% end %>
             <%= link_to @user.present, X.path_for("show_user", { user: @user }) %>
           </h2>
-          <% if @view_manager.show?("trust_for_person_link")  %>
+          <% if @view_manager.show?("action_link")  %>
             <%= link_to X.t("new_trust"), X.path_for("new_trust", { user: @user }), class: "btn btn-primary" %>
           <% end %>
         </div>
@@ -39,7 +39,6 @@
                   <th scope="col"><%= X.t("group") %></th>
                   <th><%= X.t("gmember") %></th>
                   <th><%= X.t("tower_of_trust") %></th>
-                  <th><%= X.t("action") %></th>
                 </tr>
               </thead>
               <tbody>
@@ -59,13 +58,6 @@
                       <td>
                       </td>
                     <% end %>
-                    <td>
-                      <% if @view_manager.show?("trust_back_buttons")  %>
-                        <% if gmember.current_trust  %>
-                          <%= link_to X.t("trust_back"), X.path_for("do_trust_back", { trust: gmember.current_trust }), method: "post", class: "btn btn-primary" %>
-                        <% end %>
-                      <% end %>
-                    </td>
                   </tr>
                 <% end %>
               </tbody>

@@ -26,6 +26,10 @@ class Queries
     Trust.valid.find_by(id: trust_id)
   end
 
+  def find_trust_block(trust_block_id)
+    Trust.block.find_by(id: trust_block_id)
+  end
+
   def find_user!(user_id)
     find_user(user_id) || X.ex.not_found!
   end
@@ -40,6 +44,21 @@ class Queries
 
   def find_trust!(trust_id)
     find_trust(trust_id) || X.ex.not_found!
+  end
+
+  def find_trust_block!(trust_block_id)
+    find_trust_block(trust_block_id) || X.ex.not_found!
+  end
+
+  def query(what, a)
+    case what
+    when "trust_block"
+      if a.key?(:trustee) && a.key?(:truster)
+        Trust.where(status: "block", trustee: a[:trustee], truster: a[:truster]).first
+      else fail
+      end
+    else fail
+    end
   end
 
   def all_users
