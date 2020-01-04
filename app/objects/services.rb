@@ -79,6 +79,7 @@ class Services
         elsif gmember.status_deleted?
           gmember.tower_top = nil
           gmember.set_status_active
+          gmember.start_trust_count
           gmember.save!
         else fail
         end
