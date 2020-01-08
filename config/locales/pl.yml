@@ -56,3 +56,6 @@ pl:
   delete_account_after_half_year: "Automatycznie usun konto po pol roku"
   previous_page: "Poprzednia"
   next_page: "Nastepna"
+  i_accept_privacy_policy_and_tos: "Akceptuje Polityke Prywatnosci i Regulamin"
+  legal: "Prawo"
+  privacy_policy_and_tos: "Polityka Prywatnosci i Regulamin"

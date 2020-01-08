@@ -8,6 +8,9 @@ class Url
     when "about"
       custom_options = { controller: "main", action: "about" }
       X.rails_url_for(custom_options.merge(options))
+    when "legal"
+      custom_options = { controller: "main", action: "legal" }
+      X.rails_url_for(custom_options.merge(options))
     when "new_group"
       custom_options = { controller: "main", action: "new_group" }
       X.rails_url_for(custom_options.merge(options))

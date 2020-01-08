@@ -294,4 +294,7 @@ class MainController < ApplicationController
 
   def about
   end
+
+  def legal
+  end
 end

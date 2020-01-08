@@ -27,6 +27,11 @@
         <%= f.label :half_year_account, X.t("delete_account_after_half_year") %>
         <input type="checkbox" name="half_year_account" value="true">
       </div>
+
+      <div class="field">
+        <%= link_to X.t("i_accept_privacy_policy_and_tos"), X.path_for("legal") %>
+        <input type="checkbox" name="accept_privacy_policy_and_tos" value="true" checked>
+      </div>
     
       <div class="actions">
         <%= f.submit X.t("sign_up") %>

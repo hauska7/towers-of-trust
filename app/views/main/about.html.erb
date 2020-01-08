@@ -10,6 +10,8 @@
       <p><%= link_to nil, X.github_url %></p>
       <h2><%= X.t("contact") %></h2>
       <p><%= X.contact_email %></p>
+      <h2><%= X.t("legal") %></h2>
+      <p><%= link_to X.t("privacy_policy_and_tos"), X.path_for("legal") %></p>
     </div>
 
     <div>

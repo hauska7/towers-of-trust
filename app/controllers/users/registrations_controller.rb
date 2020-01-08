@@ -7,6 +7,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
     user.set_active_status
 
     user.set_half_year_account if X.cast_flag(params["half_year_account"])
+    unless X.cast_flag(params["accept_privacy_policy_and_tos"])
+      clean_up_passwords resource
+      set_minimum_password_length
+      resource.errors.add(:accept_privacy_policy_and_tos, "Must be accepted.")
+      return respond_with resource
+    end
 
     resource.save
     yield resource if block_given?

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   root to: "main#main"
   get '/about', to: 'main#about'
+  get '/legal', to: 'main#legal'
   get '/new_group', to: 'main#new_group'
   get '/new_trust', to: 'main#new_trust'
   get '/show_user/:user_id', to: 'main#show_user'
