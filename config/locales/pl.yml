@@ -12,6 +12,8 @@ pl:
   quick_login: "Quick login"
   logout: "Wyloguj"
   sign_up: "Zarejestruj sie"
+  real_sign_up: "Zarejestruj sie"
+  play_around_sign_up: "Zarejestruj udawane konto"
   full_name: "Imie i nazwisko"
   edit_registration: "Ustawienia"
   do_trust: "Zaufaj"

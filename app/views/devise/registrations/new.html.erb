@@ -1,42 +1,66 @@
 <section class="text-center">                                                                                                             
   <div class="container">
-    <h2><%= X.t("sign_up") %></h2>
-    
-    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+    <div>
       <%= devise_error_messages! %>
-    
-      <div class="field">
-        <%= f.label :full_name, X.t("full_name") %><br />
-        <%= f.text_field :full_name, autofocus: true, autocomplete: "name" %>
-      </div>
-    
-      <div class="field">
-        <%= f.label :email %><br />
-        <%= f.email_field :email, autocomplete: "email" %>
-      </div>
-    
-      <div class="field">
-        <%= f.label :password, X.t("password") %>
-        <% if @minimum_password_length %>
-        <em>(<%= "#{@minimum_password_length} #{X.t('characters_minimum')}" %>)</em>
-        <% end %><br />
-        <%= f.password_field :password, autocomplete: "new-password" %>
-      </div>
-    
-      <div class="field">
-        <%= f.label :half_year_account, X.t("delete_account_after_half_year") %>
-        <input type="checkbox" name="half_year_account" value="true">
-      </div>
+    </div>
 
-      <div class="field">
-        <%= link_to X.t("i_accept_privacy_policy_and_tos"), X.path_for("legal") %>
-        <input type="checkbox" name="accept_privacy_policy_and_tos" value="true" checked>
-      </div>
+    <div>
+      <h2><%= X.t("real_sign_up") %></h2>
+
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+        <div class="field">
+          <%= f.label :full_name, X.t("full_name") %><br />
+          <%= f.text_field :full_name, autofocus: true, autocomplete: "name" %>
+        </div>
     
-      <div class="actions">
-        <%= f.submit X.t("sign_up") %>
-      </div>
-    <% end %>
+        <div class="field">
+          <%= f.label :email %><br />
+          <%= f.email_field :email, autocomplete: "email" %>
+        </div>
+    
+        <div class="field">
+          <%= f.label :password, X.t("password") %>
+          <% if @minimum_password_length %>
+          <em>(<%= "#{@minimum_password_length} #{X.t('characters_minimum')}" %>)</em>
+          <% end %><br />
+          <%= f.password_field :password, autocomplete: "new-password" %>
+        </div>
+    
+        <div class="field">
+          <%= f.label :half_year_account, X.t("delete_account_after_half_year") %>
+          <input type="checkbox" name="half_year_account" value="true">
+        </div>
+
+        <div class="field">
+          <%= link_to X.t("i_accept_privacy_policy_and_tos"), X.path_for("legal") %>
+          <input type="checkbox" name="accept_privacy_policy_and_tos" value="true" checked>
+        </div>
+    
+        <div class="actions">
+          <%= f.submit X.t("sign_up") %>
+        </div>
+      <% end %>
+    </div>
+
+    <div>
+      <h2><%= X.t("play_around_sign_up") %></h2>
+
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name, play_around: "true")) do |f| %>
+        <div class="field">
+          <%= f.label :full_name, X.t("full_name") %><br />
+          <%= f.text_field :full_name, autofocus: true, autocomplete: "name" %>
+        </div>
+    
+        <div class="field">
+          <%= link_to X.t("i_accept_privacy_policy_and_tos"), X.path_for("legal") %>
+          <input type="checkbox" name="accept_privacy_policy_and_tos" value="true" checked>
+        </div>
+    
+        <div class="actions">
+          <%= f.submit X.t("sign_up") %>
+        </div>
+      <% end %>
+    </div>
     
     <%= render "devise/shared/links" %>
 

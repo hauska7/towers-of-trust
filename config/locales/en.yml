@@ -15,6 +15,8 @@ en:
   quick_login: "Quick login"
   logout: "Logout"
   sign_up: "Sign Up"
+  real_sign_up: "Real signup"
+  play_around_sign_up: "Play around signup"
   full_name: "Full name"
   edit_registration: "Settings"
   do_trust: "Trust"

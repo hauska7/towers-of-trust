@@ -1,5 +1,5 @@
 class Services
-  def recount_trusts(group)
+  def clean_up_trusts(group)
     X.transaction do
       gmembers = group.query_gmembers({ pagination: X.get_pagination("dont") })
       gmembers.each do |gmember|
@@ -12,7 +12,7 @@ class Services
     end
   end
 
-  def recount_towers(group)
+  def clean_up_towers(group)
     X.transaction do
       gmembers = group.query_gmembers({ pagination: X.get_pagination("dont") })
       gmembers.each do |gmember|
@@ -32,9 +32,25 @@ class Services
     end
   end
 
-  def recount_group_gmembers(group)
+  def clean_up_gmembers_count(group)
     group.members_count = X.queries.count_gmembers(group)
     group.save!
+  end
+
+  def clean_up(groups = "all")
+    if groups == "all"
+      groups = X.queries.all_groups
+    end
+
+    groups = Array(groups)
+
+    groups.each do |group|
+      X.transaction do
+        clean_up_trusts(group)
+        clean_up_towers(group)
+        clean_up_gmembers_count(group)
+      end
+    end
   end
 
   def delete_account(user)
@@ -42,21 +58,15 @@ class Services
 
     X.transaction do
       gmembers.each do |gmember|
-        delete_gmember(gmember)
+        delete_gmember(gmember, "dont_clean_up")
       end
 
       user.set_deleted_at_now
       user.set_deleted_status
       user.set_email_nil
       user.save!
-    end
 
-    X.transaction do
-      gmembers.map(&:group).each do |group|
-        recount_trusts(group)
-        recount_towers(group)
-        recount_group_gmembers(group)
-      end
+      clean_up(gmembers.map(&:group))
     end
     self
   end
@@ -85,12 +95,14 @@ class Services
         end
       end
 
-      recount_group_gmembers(group)
+      clean_up_gmembers_count(group)
     end
     self
   end
 
-  def trust_back(a)
+  def trust_back(a, options)
+    fail unless options == "dont_clean_up"
+
     if a.is_a?(Trust)
       truster = a.truster
     elsif a.is_a?(GroupMembership)
@@ -112,7 +124,9 @@ class Services
     self
   end
 
-  def delete_gmember(gmember)
+  def delete_gmember(gmember, options)
+    fail unless options == "dont_clean_up"
+
     trusts_on = X.queries.trusts_on(gmember, { group: gmember.group })
     trusts_of = X.queries.trusts_of({ gmember: gmember })
 
@@ -128,16 +142,5 @@ class Services
     gmember.set_status_deleted
     gmember.save!
     self
-  end
-
-  def recount_everything
-    groups = X.queries.all_groups
-    groups.each do |group|
-      X.transaction do
-        recount_trusts(group)
-        recount_towers(group)
-        recount_group_gmembers(group)
-      end
-    end
   end
 end

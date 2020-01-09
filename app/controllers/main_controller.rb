@@ -154,8 +154,8 @@ class MainController < ApplicationController
       end
 
       X.transaction do
-        X.services.trust_back(trustee) if trustee.trusting?(truster)
-        X.services.trust_back(truster)
+        X.services.trust_back(trustee, "dont_clean_up") if trustee.trusting?(truster)
+        X.services.trust_back(truster, "dont_clean_up")
 
         trust = X.factory.build("trust")
         trust.set_status_active
@@ -184,7 +184,7 @@ class MainController < ApplicationController
       end
 
       X.guard("trust_back", { current_user: current_user, trust: trust })
-      X.services.trust_back(trust)
+      X.services.trust_back(trust, "dont_clean_up")
     when "block"
       user = X.queries.find_user!(params["user_id"])
       group = X.queries.find_group!(params["group_id"])
@@ -218,8 +218,7 @@ class MainController < ApplicationController
     else fail
     end
 
-    X.services.recount_trusts(group)
-    X.services.recount_towers(group)
+    X.services.clean_up(group)
 
     redirect_to X.path_for("show_user", { user: current_user })
   end
@@ -281,11 +280,9 @@ class MainController < ApplicationController
     when "gmember"
       gmember = X.queries.find_gmember!(params["gmember_id"])
       X.guard("leave_group", { gmember: gmember, current_user: current_user })
-      X.services.delete_gmember(gmember)
+      X.services.delete_gmember(gmember, "dont_clean_up")
 
-      X.services.recount_trusts(gmember.group)
-      X.services.recount_towers(gmember.group)
-      X.services.recount_group_gmembers(gmember.group)
+      X.services.clean_up(gmember.group)
 
       redirect_to X.path_for("show_group", { group: gmember.group })
     else fail

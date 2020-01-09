@@ -3,15 +3,23 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def create
     build_resource(sign_up_params)
 
-    user = resource
-    user.set_active_status
-
-    user.set_half_year_account if X.cast_flag(params["half_year_account"])
     unless X.cast_flag(params["accept_privacy_policy_and_tos"])
       clean_up_passwords resource
       set_minimum_password_length
       resource.errors.add(:accept_privacy_policy_and_tos, "Must be accepted.")
       return respond_with resource
+    end
+
+    user = resource
+    user.set_active_status
+
+    if X.cast_flag(params["play_around"])
+      user.set_password(X.generate_password)
+      user.set_email(X.generate_play_around_email)
+    else
+      if X.cast_flag(params["half_year_account"])
+        user.set_half_year_account
+      end
     end
 
     resource.save

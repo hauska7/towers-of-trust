@@ -178,6 +178,14 @@ class X
     "##{number1}#{number2}#{number3}"
   end
 
+  def self.generate_password
+    Devise.friendly_token.first(8)
+  end
+
+  def self.generate_play_around_email
+    "#{Devise.friendly_token.first(8)}@klubdyskusyjny.com"
+  end
+
   def self.cast_flag(value)
     ActiveModel::Type::Boolean.new.cast(value)
   end
