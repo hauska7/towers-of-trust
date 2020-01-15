@@ -21,6 +21,7 @@
               </tr>
             </thead>
             <tbody>
+              <% previous_tower_top = nil %>
               <% @gmembers.each do |gmember| %>
                 <tr>
                   <td>
@@ -28,8 +29,10 @@
                   </td>
                   <% if gmember.tower_top  %>
                     <td bgcolor="<%= gmember.tower_top.color %>">
-                      <%= link_to gmember.tower_top.present("tower"),
-                                  X.path_for("show_gmember", { gmember: gmember.tower_top }) %>
+                      <% if gmember.tower_top != previous_tower_top  %>
+                        <%= link_to gmember.tower_top.present("tower"),
+                                    X.path_for("show_gmember", { gmember: gmember.tower_top }) %>
+                      <% end %>
                     </td>
                   <% else %>
                     <td></td>
@@ -38,6 +41,7 @@
                     <%= link_to X.t("profile_instance"), X.path_for("show_user", { user: gmember.member }) %>
                   </td>
                 </tr>
+                <% previous_tower_top = gmember.tower_top %>
               <% end %>
             </tbody>
           </table>
