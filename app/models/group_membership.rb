@@ -2,6 +2,7 @@ class GroupMembership < ApplicationRecord
   belongs_to :group
   belongs_to :member, class_name: "User"
   belongs_to :tower_top, class_name: "GroupMembership", optional: true
+  belongs_to :tower, optional: true
   belongs_to :trustee, class_name: "GroupMembership", optional: true
 
   has_many :gmembers_in_this_tower, class_name: "GroupMembership", foreign_key: "tower_id"

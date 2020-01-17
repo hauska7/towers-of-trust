@@ -11,6 +11,8 @@ class Factory
       Trust.new
     when "view_manager"
       ViewManager.new
+    when "tower"
+      Tower.new
     else fail
     end
   end

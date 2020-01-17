@@ -1,7 +1,7 @@
 class Services
   def clean_up_trusts(group)
     X.transaction do
-      gmembers = group.query_gmembers({ pagination: X.get_pagination("dont") })
+      gmembers = group.query_gmembers({ pagination: X.get_pagination("no_pagination") })
       gmembers.each do |gmember|
         trust_count = X.queries.count_trust(gmember)
         trustee = gmember.query_trustee
@@ -14,19 +14,13 @@ class Services
 
   def clean_up_towers(group)
     X.transaction do
-      gmembers = group.query_gmembers({ pagination: X.get_pagination("dont") })
+      gmembers = group.query_gmembers({ pagination: X.get_pagination("no_pagination") })
+
       gmembers.each do |gmember|
-        tower_top = X.queries.tower_top_from_trust({ gmember: gmember })
-        gmember.tower_top = tower_top
-        gmember.save!
-      end
-      tower_tops = gmembers.map(&:tower_top).compact
-      gmembers.each do |gmember|
-        if gmember.tower_top.nil?
-          if tower_tops.include?(gmember)
-            gmember.tower_top = gmember
-            gmember.save!
-          end
+        top_gmember = X.queries.top_gmember_from_trust({ gmember: gmember })
+        if top_gmember
+          gmember.tower = top_gmember.tower
+          gmember.save!
         end
       end
     end

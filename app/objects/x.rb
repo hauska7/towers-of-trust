@@ -57,7 +57,7 @@ class X
       total_count = nil
       result.set(offset, page_size, total_count)
       result
-    elsif a == "dont"
+    elsif a == "no_pagination"
       Pagination.new.unset_paginate
     else fail
     end
@@ -184,6 +184,13 @@ class X
 
   def self.generate_play_around_email
     "#{Devise.friendly_token.first(8)}@klubdyskusyjny.com"
+  end
+
+  def self.generate_tower_name
+    letters = ("A".."Z").to_a
+    result = ""
+    4.times { result << letters.sample }
+    result
   end
 
   def self.cast_flag(value)

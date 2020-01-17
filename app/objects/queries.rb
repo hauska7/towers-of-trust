@@ -93,6 +93,8 @@ class Queries
           a[:group].gmembers.active.order_by_trust_count.paginate(a[:pagination]).to_a
         when "order_by_trust_count"
           a[:group].gmembers.active.order_by_trust_count.paginate(a[:pagination]).to_a
+        when "joined_at_desc"
+          a[:group].gmembers.active.order(created_at: :desc).paginate(a[:pagination]).to_a
         else fail
         end
       elsif a.key?(:member)
@@ -101,6 +103,8 @@ class Queries
           a[:member].gmembers.active.order_by_trust_count.to_a
         when "order_by_trust_count"
           a[:member].gmembers.active.order_by_trust_count.to_a
+        when "joined_at_desc"
+          a[:member].gmembers.active.order(created_at: :desc).to_a
         else fail
         end
       else fail
@@ -141,7 +145,7 @@ class Queries
     group.gmembers.active.count
   end
 
-  def tower_top_from_trust(a)
+  def top_gmember_from_trust(a)
     if a.is_a?(Hash)
       if a.key?(:gmember)
         gmember = a[:gmember]

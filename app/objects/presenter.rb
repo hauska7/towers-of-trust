@@ -8,7 +8,7 @@ class Presenter
     elsif object.is_a?(Group)
       object.name
     elsif object.is_a?(GroupMembership)
-      if options == "user" || options == "tower"
+      if options == "tower"
         if object.trust_count > 0
           "#{object.member_name}(#{object.trust_count})"
         else
@@ -16,6 +16,8 @@ class Presenter
         end
       elsif options == "group"
         object.group_name
+      elsif options == "user"
+        object.member_name
       else fail
       end
     else fail
