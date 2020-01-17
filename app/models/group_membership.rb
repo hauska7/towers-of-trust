@@ -1,6 +1,7 @@
 class GroupMembership < ApplicationRecord
   belongs_to :group
   belongs_to :member, class_name: "User"
+  # todo: remove
   belongs_to :tower_top, class_name: "GroupMembership", optional: true
   belongs_to :tower, optional: true
   belongs_to :trustee, class_name: "GroupMembership", optional: true
@@ -12,9 +13,9 @@ class GroupMembership < ApplicationRecord
   scope :active, -> { where(status: "active") }
   scope :order_by_trust_count, -> { order(trust_count: :desc) }
 
-  def query_tower_top_down
-    X.queries.tower_top_down({ gmember: self })
-  end
+  #def query_tower_top_down
+  #  X.queries.tower_top_down({ gmember: self })
+  #end
 
   def trusting?(trustee)
     X.queries.trusting?({ trustee: trustee, truster: self })

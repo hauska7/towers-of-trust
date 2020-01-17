@@ -45,8 +45,8 @@ class MainController < ApplicationController
       @group = @gmember.group
       @trusts_on = X.queries.trusts_on(@gmember, { order: "order_by_creation", group: @group })
 
-      @tower = @gmember.query_tower_top_down
-      @tower << @gmember if !@tower.empty? && !@tower.include?(@gmember)
+      #@tower = @gmember.query_tower_top_down
+      #@tower << @gmember if !@tower.empty? && !@tower.include?(@gmember)
 
       if X.logged_in?(self)
         @view_manager.show("action_link")
@@ -167,11 +167,6 @@ class MainController < ApplicationController
 
         truster.trustee = trustee
         truster.save!
-
-        if trustee.tower_top.nil?
-          trustee.tower_top = trustee
-          trustee.save!
-        end
       end
     when "back"
       user = X.queries.find_user!(params["user_id"])
@@ -196,7 +191,7 @@ class MainController < ApplicationController
       end
 
       trust.truster.trustee = nil
-      trust.truster.tower_top = nil
+      trust.truster.tower = nil
       trust.truster.save!
       trust.set_status_block
       trust.save!

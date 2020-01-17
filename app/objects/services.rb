@@ -19,8 +19,18 @@ class Services
       gmembers.each do |gmember|
         top_gmember = X.queries.top_gmember_from_trust({ gmember: gmember })
         if top_gmember
-          gmember.tower = top_gmember.tower
-          gmember.save!
+          if gmember.tower
+            gmember.tower = top_gmember.tower
+            gmember.save!
+          else
+            tower = X.factory.build("tower")
+            tower.set_name(X.generate_tower_name)
+            tower.group = group
+            tower.owner = gmember
+            tower.save!
+            gmember.tower = tower
+            gmember.save!
+          end
         end
       end
     end
@@ -81,7 +91,7 @@ class Services
         elsif gmember.status_active?
           # procced
         elsif gmember.status_deleted?
-          gmember.tower_top = nil
+          gmember.tower = nil
           gmember.set_status_active
           gmember.start_trust_count
           gmember.save!
@@ -107,7 +117,7 @@ class Services
     X.transaction do
       trust = truster.current_trust
       if trust
-        truster.tower_top = nil
+        truster.tower = nil
         truster.trustee = nil
         truster.save!
         trust.set_status_old

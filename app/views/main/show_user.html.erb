@@ -50,9 +50,9 @@
                     <td>
                       <%= link_to gmember.present("user"), X.path_for("show_gmember", { gmember: gmember }) %>
                     </td>
-                    <% if gmember.tower_top  %>
-                      <td bgcolor="<%= gmember.tower_top.color %>">
-                        <%= link_to gmember.tower_top.present("tower"), X.path_for("show_gmember", { gmember: gmember.tower_top }) %>
+                    <% if gmember.tower  %>
+                      <td bgcolor="<%= gmember.tower.color %>">
+                        <%= gmember.tower.present %>
                       </td>
                     <% else %>
                       <td>

@@ -31,6 +31,7 @@
               <thead>
               </thead>
               <tbody>
+              <% if false %>
                 <% if @gmember.tower_top %>
                   <% @tower.each do |tower_floor| %>
                     <tr bgcolor="<%= @gmember.tower_top.color %>">
@@ -47,6 +48,7 @@
                     </td>
                   </tr>
                 <% end %>
+              <% end %>
               </tbody>
             </table>
           <% end %>

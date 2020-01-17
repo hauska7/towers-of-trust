@@ -8,4 +8,12 @@ class Tower < ApplicationRecord
     self.name = name
     self
   end
+
+  def color
+    "#e9e0f9"
+  end
+
+  def present
+    name
+  end
 end

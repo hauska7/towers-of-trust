@@ -162,24 +162,24 @@ class Queries
     end
   end
 
-  def tower_top_down(a)
-    if a.is_a?(Hash)
-      if a.key?(:gmember)
-        gmember = a[:gmember]
-        result = []
-        tower_top = gmember.tower_top
-        current = gmember.trustee
-        while !current.nil? && current != tower_top
-          result << current
-          current = current.trustee
-        end
-        result << tower_top if tower_top
-        result.reverse
-      else fail
-      end
-    else fail
-    end
-  end
+  #def tower_top_down(a)
+  #  if a.is_a?(Hash)
+  #    if a.key?(:gmember)
+  #      gmember = a[:gmember]
+  #      result = []
+  #      tower_top = gmember.tower_top
+  #      current = gmember.trustee
+  #      while !current.nil? && current != tower_top
+  #        result << current
+  #        current = current.trustee
+  #      end
+  #      result << tower_top if tower_top
+  #      result.reverse
+  #    else fail
+  #    end
+  #  else fail
+  #  end
+  #end
 
   def trusts_on(gmembers, options)
     group = options.fetch(:group)
