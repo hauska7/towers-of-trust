@@ -28,7 +28,12 @@ class Url
       custom_options = { controller: "main", action: "show_user", user_id: a[:user].id, tab: tab }
       X.rails_url_for(custom_options.merge(options))
     when "show_group"
-      custom_options = { controller: "main", action: "show_group", group_id: a[:group].id }
+      tab = a[:tab] || "towers"
+      custom_options = { controller: "main", action: "show_group", group_id: a[:group].id, tab: tab }
+      X.rails_url_for(custom_options.merge(options))
+    when "show_tower"
+      tab = a[:tab] || "tower"
+      custom_options = { controller: "main", action: "show_group", group_id: a[:tower].group.id, tower_id: a[:tower].id, tab: tab }
       X.rails_url_for(custom_options.merge(options))
     when "show_gmember"
       tab = a[:tab] || "tower_of_trust"

@@ -19,18 +19,18 @@ class Services
       gmembers.each do |gmember|
         top_gmember = X.queries.top_gmember_from_trust({ gmember: gmember })
         if top_gmember
-          if gmember.tower
-            gmember.tower = top_gmember.tower
-            gmember.save!
-          else
+          unless top_gmember.tower
             tower = X.factory.build("tower")
             tower.set_name(X.generate_tower_name)
             tower.group = group
-            tower.owner = gmember
+            tower.owner = top_gmember
             tower.save!
-            gmember.tower = tower
-            gmember.save!
+            top_gmember.tower = tower
+            top_gmember.save!
           end
+
+          gmember.tower = top_gmember.tower
+          gmember.save!
         end
       end
     end

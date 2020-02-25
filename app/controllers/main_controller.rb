@@ -71,9 +71,6 @@ class MainController < ApplicationController
 
   def show_group
     @group = X.queries.find_group!(params["group_id"])
-    @pagination = X.get_pagination(params)
-    @gmembers = @group.query_gmembers({ order: "joined_at_desc", pagination: @pagination })
-
     if X.logged_in?(self)
       @gmember = X.queries.find_gmember({ group: @group, member: current_user })
       if @gmember
@@ -82,6 +79,22 @@ class MainController < ApplicationController
         @view_manager.show("join_group_button")
       end
     end
+
+    case params["tab"]
+    when "members"
+      @pagination = X.get_pagination(params)
+      @gmembers = @group.query_gmembers({ order: "joined_at_desc", pagination: @pagination })
+      @view_manager.show("members_tab")
+    when "towers"
+      @towers = @group.query("towers")
+      @view_manager.show("towers_tab")
+    when "tower"
+      @tower = X.queries.query("tower", { tower_id: params["tower_id"] })
+      @tower_nodes = X.queries.query("tower_nodes", { tower: @tower })
+      @view_manager.show("tower_tab")
+    else fail
+    end
+
     @view_manager.valid
   end
 

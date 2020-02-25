@@ -22,6 +22,11 @@ class Group < ApplicationRecord
     X.queries.gmembers(a)
   end
 
+  def query(what, a = {})
+    a[:group] = self
+    X.queries.query(what, a)
+  end
+
   def query_gmember(user)
     X.queries.find_gmember({ group: self, member: user })
   end

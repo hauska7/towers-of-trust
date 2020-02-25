@@ -11,55 +11,132 @@
           <% elsif @view_manager.show?("leave_group_button") %>
             <%= link_to X.t("leave_group"), X.path_for("do_leave_group", { gmember: @gmember }), method: "post", class: "btn btn-primary" %>
           <% end %>
-          <h3><%= X.t("members") %></h3>
-          <table class="table">
-            <thead>
-              <tr>
-                <th><%= X.t("gmember") %></th>
-                <th><%= X.t("tower_of_trust") %></th>
-                <th scope="col"><%= X.t("user") %></th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @gmembers.each do |gmember| %>
+
+          <div>
+            <ul class="nav nav-tabs">
+              <li class="nav-item">
+                <a class="nav-link <%= 'active' if @view_manager.show?('towers_tab') %>"
+                   href="<%= X.path_for('show_group', { group: @group, tab: 'towers' }) %>">
+                  <%= X.t("tower_of_trust") %>
+                </a>
+              </li>
+              <% if @view_manager.show?('tower_tab') %>
+                <li class="nav-item">
+                  <a class="nav-link <%= 'active' if @view_manager.show?('tower_tab') %>" href="">
+                    <%= X.t("tower_of_trust") %>
+                  </a>
+                </li>
+              <% end %>
+              <li class="nav-item">
+                <a class="nav-link <%= 'active' if @view_manager.show?('members_tab') %>"
+                   href="<%= X.path_for('show_group', { group: @group, tab: 'members' }) %>">
+                  <%= X.t("members") %>
+                </a>
+              </li>
+            </ul>
+          <% if @view_manager.show?('towers_tab') %>
+            <table class="table">
+              <thead>
                 <tr>
-                  <td>
-                    <%= link_to gmember.present("user"), X.path_for("show_gmember", { gmember: gmember }) %>
-                  </td>
-                  <% if gmember.tower  %>
-                    <td bgcolor="<%= gmember.tower.color %>">
-                      <%= gmember.tower.name %>
-                    </td>
-                  <% else %>
-                    <td></td>
-                  <% end %>
-                  <td>
-                    <%= link_to X.t("profile_instance"), X.path_for("show_user", { user: gmember.member }) %>
-                  </td>
+                  <th><%= X.t("tower_of_trust") %></th>
                 </tr>
-              <% end %>
-            </tbody>
-          </table>
-          <% if @pagination.has_many_pages? %>
-            <nav>
-              <ul class="pagination">
-              <% if @pagination.has_previous_page? %>
-                <li class="page-item">
-                  <a class="page-link" href="?<%= @pagination.previous_page_query %>">
-                    <%= X.t("previous_page") %>
-                  </a>
-                </li>
-              <% end %>
-              <% if @pagination.has_next_page? %>
-                <li class="page-item">
-                  <a class="page-link" href="?<%= @pagination.next_page_query %>">
-                    <%= X.t("next_page") %>
-                  </a>
-                </li>
-              <% end %>
-              </ul>
-            </nav>
+              </thead>
+              <tbody>
+                <% @towers.each do |tower| %>
+                  <tr>
+                    <td>
+                      <%= tower.present %>
+                      <%= link_to tower.present, X.path_for("show_tower", { tower: tower }) %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          <% elsif @view_manager.show?('tower_tab') %>
+            <h3><%= @tower.present %></h3>
+
+            <%
+              def draw_tree(node)
+                node[:children]&.each do |node|
+            %>
+                  <li class="list-group-item">
+                    <span><%= node[:gmember].present("user") %></span>
+            <%
+                      if node[:children].present?
+            %>
+                          <ul class="list-group"><% draw_tree(node) %></ul>
+            <%
+                      end
+            %>
+                  </li>
+            <%
+                end; nil
+              end
+            %>
+
+          <% if @tower_nodes %>
+            <ul class="list-group">
+              <li class="list-group-item">
+                <span><%= @tower_nodes[:top][:gmember].present("user") %></span>
+
+                <ul class="list-group"><%= draw_tree(@tower_nodes[:top]) %></ul>
+              </li>
+            </ul>
           <% end %>
+
+          <% elsif @view_manager.show?('members_tab') %>
+            <h3><%= X.t("members") %></h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th><%= X.t("gmember") %></th>
+                  <th><%= X.t("tower_of_trust") %></th>
+                  <th scope="col"><%= X.t("profile_instance") %></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @gmembers.each do |gmember| %>
+                  <tr>
+                    <td>
+                      <%= link_to gmember.present("user"), X.path_for("show_gmember", { gmember: gmember }) %>
+                    </td>
+                    <% if gmember.tower  %>
+                      <td bgcolor="<%= gmember.tower.color %>">
+                        <%= gmember.tower.name %>
+                      </td>
+                    <% else %>
+                      <td></td>
+                    <% end %>
+                    <td>
+                      <%= link_to X.t("profile_instance"), X.path_for("show_user", { user: gmember.member }) %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+            <% if @pagination.has_many_pages? %>
+              <nav>
+                <ul class="pagination">
+                <% if @pagination.has_previous_page? %>
+                  <li class="page-item">
+                    <a class="page-link" href="?<%= @pagination.previous_page_query %>">
+                      <%= X.t("previous_page") %>
+                    </a>
+                  </li>
+                <% end %>
+                <% if @pagination.has_next_page? %>
+                  <li class="page-item">
+                    <a class="page-link" href="?<%= @pagination.next_page_query %>">
+                      <%= X.t("next_page") %>
+                    </a>
+                  </li>
+                <% end %>
+                </ul>
+              </nav>
+            <% end %>
+          <% end %>
+
+          </div>
         </div>
       </div>
     </div>

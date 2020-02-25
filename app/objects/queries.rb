@@ -57,6 +57,30 @@ class Queries
         Trust.where(status: "block", trustee: a[:trustee], truster: a[:truster]).first
       else fail
       end
+    when "towers"
+      if a.key?(:group)
+        Tower.where(group: a[:group]).to_a
+      else fail
+      end
+    when "tower"
+      if a.key?(:tower_id)
+        Tower.where(id: a[:tower_id]).first
+      else fail
+      end
+    when "tower_nodes"
+      if a.key?(:tower)
+        result = {}
+        top = GroupMembership.active.where(tower: a[:tower]).where("trustee_id = id").first
+        return nil if top.nil?
+        children = GroupMembership.active.where(trustee: top).to_a.map { |gmember| { gmember: gmember } }
+        result[:top] = { gmember: top, children: children }
+        children.each do |node|
+          children = GroupMembership.active.where(trustee: node[:gmember]).to_a.map { |gmember| { gmember: gmember } }
+          node[:children] = children
+        end
+        result
+      else fail
+      end
     else fail
     end
   end
