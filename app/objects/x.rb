@@ -200,4 +200,9 @@ class X
   def self.time_in_half_a_year
     6.months.from_now
   end
+
+  def self.pp(object)
+    # todo: use pp but return output as result instead of to std
+    object.to_s
+  end
 end

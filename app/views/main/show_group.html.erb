@@ -54,36 +54,10 @@
             </table>
           <% elsif @view_manager.show?('tower_tab') %>
             <h3><%= @tower.present %></h3>
-
-            <%
-              def draw_tree(node)
-                node[:children]&.each do |node|
-            %>
-                  <li class="list-group-item">
-                    <span><%= node[:gmember].present("user") %></span>
-            <%
-                      if node[:children].present?
-            %>
-                          <ul class="list-group"><% draw_tree(node) %></ul>
-            <%
-                      end
-            %>
-                  </li>
-            <%
-                end; nil
-              end
-            %>
-
-          <% if @tower_nodes %>
-            <ul class="list-group">
-              <li class="list-group-item">
-                <span><%= @tower_nodes[:top][:gmember].present("user") %></span>
-
-                <ul class="list-group"><%= draw_tree(@tower_nodes[:top]) %></ul>
-              </li>
-            </ul>
-          <% end %>
-
+            <code class="prettyprint">
+              <%= X.pp(@tower_nodes) %>
+            </code>
+            <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
           <% elsif @view_manager.show?('members_tab') %>
             <h3><%= X.t("members") %></h3>
             <table class="table">
