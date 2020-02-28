@@ -58,6 +58,7 @@
               <%= X.pp(@tower_nodes) %>
             </code>
             <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+            <%= javascript_pack_tag "hello_react" %>
           <% elsif @view_manager.show?('members_tab') %>
             <h3><%= X.t("members") %></h3>
             <table class="table">
