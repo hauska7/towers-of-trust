@@ -18,7 +18,7 @@
               <li class="nav-item">
                 <a class="nav-link <%= 'active' if @view_manager.show?('towers_tab') %>"
                    href="<%= X.path_for('show_group', { group: @group, tab: 'towers' }) %>">
-                  <%= X.t("tower_of_trust") %>
+                  <%= X.t("towers_of_trust") %>
                 </a>
               </li>
               <% if @view_manager.show?('tower_tab') %>
@@ -38,15 +38,11 @@
           <% if @view_manager.show?('towers_tab') %>
             <table class="table">
               <thead>
-                <tr>
-                  <th><%= X.t("tower_of_trust") %></th>
-                </tr>
               </thead>
               <tbody>
                 <% @towers.each do |tower| %>
                   <tr>
                     <td>
-                      <%= tower.present %>
                       <%= link_to tower.present, X.path_for("show_tower", { tower: tower }) %>
                     </td>
                   </tr>
@@ -81,7 +77,6 @@
             </div>
 
           <% elsif @view_manager.show?('members_tab') %>
-            <h3><%= X.t("members") %></h3>
             <table class="table">
               <thead>
                 <tr>
@@ -98,7 +93,7 @@
                     </td>
                     <% if gmember.tower  %>
                       <td bgcolor="<%= gmember.tower.color %>">
-                        <%= gmember.tower.name %>
+                        <%= link_to gmamber.tower.present, X.path_for("show_tower", { tower: gmember.tower }) %>
                       </td>
                     <% else %>
                       <td></td>
