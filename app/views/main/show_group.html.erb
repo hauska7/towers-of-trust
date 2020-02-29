@@ -5,7 +5,8 @@
         <div>
           <h1>
             <%= link_to @group.present, X.path_for("show_group", { group: @group }) %>
-          </h3>
+            
+          </h1>
           <% if @view_manager.show?("join_group_button") %>
             <%= link_to X.t("join_group"), X.path_for("do_join_group", { group: @group }), method: "post", class: "btn btn-primary" %>
           <% elsif @view_manager.show?("leave_group_button") %>
@@ -23,7 +24,7 @@
               <% if @view_manager.show?('tower_tab') %>
                 <li class="nav-item">
                   <a class="nav-link <%= 'active' if @view_manager.show?('tower_tab') %>" href="">
-                    <%= X.t("tower_of_trust") %>
+                    <%= X.t("tower_of_trust") + " - " + @tower.present %>
                   </a>
                 </li>
               <% end %>
@@ -53,12 +54,32 @@
               </tbody>
             </table>
           <% elsif @view_manager.show?('tower_tab') %>
-            <h3><%= @tower.present %></h3>
-            <code class="prettyprint">
-              <%= X.pp(@tower_nodes) %>
-            </code>
-            <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
-            <%= javascript_pack_tag "hello_react" %>
+            <% def draw_tree(node, is_child) %>
+              <% if node[:children].present? %>
+                <details class="tree-nav__item is-expandable">
+                  <summary class="tree-nav__item-title">
+                    <%= node[:gmember].present("user") %>
+                  </summary>
+                <div class="tree-nav__item">
+                  <% node[:children].each do |child| %>
+                    <% draw_tree(child, true) %>
+                  <% end; nil %>
+                </div>
+                </details>
+              <% else %>
+                  <a class="tree-nav__item-title">
+                    <%= node[:gmember].present("user") %>
+                  </a>
+              <% end %>
+            <% end %>
+
+            <div class="tower-tree">
+              <link href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.css" rel="stylesheet" type="text/css"/>
+              <nav class="tree-nav">
+                <% draw_tree(@tower_nodes[:top], false) if !@tower_nodes.nil? %>
+              </nav>
+            </div>
+
           <% elsif @view_manager.show?('members_tab') %>
             <h3><%= X.t("members") %></h3>
             <table class="table">

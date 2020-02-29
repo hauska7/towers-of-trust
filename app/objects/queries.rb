@@ -72,11 +72,11 @@ class Queries
         result = {}
         top = GroupMembership.active.where(tower: a[:tower]).where("trustee_id = id").first
         return nil if top.nil?
-        children = GroupMembership.active.where(trustee: top).to_a.map { |gmember| { gmember: gmember } }
+        children = GroupMembership.active.where(trustee: top).to_a.reject { |gmember| gmember == top }.map { |gmember| { gmember: gmember } }
         result[:top] = { gmember: top, children: children }
         children.each do |node|
-          children = GroupMembership.active.where(trustee: node[:gmember]).to_a.map { |gmember| { gmember: gmember } }
-          node[:children] = children
+          children2 = GroupMembership.active.where(trustee: node[:gmember]).to_a.reject { |gmember| gmember == node[:gmember] }.map { |gmember| { gmember: gmember } }
+          node[:children] = children2
         end
         result
       else fail
