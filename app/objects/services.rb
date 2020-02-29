@@ -27,6 +27,9 @@ class Services
             tower.save!
             top_gmember.tower = tower
             top_gmember.save!
+          else
+            top_gmember.tower.owner = top_gmember
+            top_gmember.tower.save!
           end
 
           gmember.tower = top_gmember.tower
