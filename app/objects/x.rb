@@ -1,6 +1,6 @@
 class X
   def self.app_name
-    t("klub_dyskusyjny")
+    t("towers_of_trust")
   end
 
   def self.time_now
