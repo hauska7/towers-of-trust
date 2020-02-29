@@ -93,7 +93,7 @@
                     </td>
                     <% if gmember.tower  %>
                       <td bgcolor="<%= gmember.tower.color %>">
-                        <%= link_to gmamber.tower.present, X.path_for("show_tower", { tower: gmember.tower }) %>
+                        <%= link_to gmember.tower.present, X.path_for("show_tower", { tower: gmember.tower }) %>
                       </td>
                     <% else %>
                       <td></td>
