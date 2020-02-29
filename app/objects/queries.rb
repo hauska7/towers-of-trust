@@ -70,7 +70,7 @@ class Queries
     when "tower_nodes"
       if a.key?(:tower)
         result = {}
-        top = GroupMembership.active.where(tower: a[:tower]).where("trustee_id = id").first
+        top = a[:tower].owner
         return nil if top.nil?
         children = GroupMembership.active.where(trustee: top).to_a.reject { |gmember| gmember == top }.map { |gmember| { gmember: gmember } }
         result[:top] = { gmember: top, children: children }
