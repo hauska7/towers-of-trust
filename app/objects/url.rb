@@ -25,7 +25,11 @@ class Url
       X.url_helpers.edit_user_registration_path
     when "show_user"
       tab = a[:tab] || "participating_groups"
-      custom_options = { controller: "main", action: "show_user", user_id: a[:user].id, tab: tab }
+      if tab == "trust_history"
+        custom_options = { controller: "main", action: "show_user", user_id: a[:user].id, group_id: a[:group].id, tab: tab }
+      else
+        custom_options = { controller: "main", action: "show_user", user_id: a[:user].id, tab: tab }
+      end
       X.rails_url_for(custom_options.merge(options))
     when "show_group"
       tab = a[:tab] || "towers"
@@ -34,10 +38,6 @@ class Url
     when "show_tower"
       tab = a[:tab] || "tower"
       custom_options = { controller: "main", action: "show_group", group_id: a[:tower].group.id, tower_id: a[:tower].id, tab: tab }
-      X.rails_url_for(custom_options.merge(options))
-    when "show_gmember"
-      tab = a[:tab] || "tower_of_trust"
-      custom_options = { controller: "main", action: "show_gmember", gmember_id: a[:gmember].id, tab: tab }
       X.rails_url_for(custom_options.merge(options))
     when "do_trust_regular"
       custom_options = { controller: "main", action: "do_trust", mode: "regular", user_id: a[:user].id, group_id: a[:group].id }

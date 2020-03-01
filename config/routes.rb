@@ -9,7 +9,6 @@ Rails.application.routes.draw do
   get '/new_trust', to: 'main#new_trust'
   get '/show_user/:user_id', to: 'main#show_user'
   get '/show_group/:group_id', to: 'main#show_group'
-  get '/show_gmember/:gmember_id', to: 'main#show_gmember'
   post '/do_trust', to: 'main#do_trust'
   get '/do_dev_helper', to: 'main#do_dev_helper'
   get '/do_logout', to: 'users/registrations#destroy'

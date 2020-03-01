@@ -8,65 +8,35 @@ class MainController < ApplicationController
     when "participating_groups"
       @user = X.queries.find_user!(params["user_id"])
       @gmembers = @user.query_gmembers({ order: "order_by_trust_count" })
-      if X.logged_in?(self)
-        @view_manager.show("action_link")
-        
-        if @user == current_user
-          @view_manager.show("your_profile_title")
-        else
-          @view_manager.show("somebody_profile_title")
-        end
-      end
+
       @view_manager.show("participating_groups_tab")
-      @view_manager.valid
     when "moderating_groups"
       @user = X.queries.find_user!(params["user_id"])
       @moderating_groups = @user.query_groups("moderating")
-      if X.logged_in?(self)
-        @view_manager.show("action_link")
-        
-        if @user == current_user
-          @view_manager.show("your_profile_title")
-        else
-          @view_manager.show("somebody_profile_title")
-        end
-      end
+
       @view_manager.show("moderating_groups_tab")
-      @view_manager.valid
-    else fail
-    end
-  end
-
-  def show_gmember
-    case params["tab"]
-    when "tower_of_trust"
-      @gmember = X.queries.find_gmember!(params["gmember_id"])
-      @user = @gmember.member
-      @group = @gmember.group
-      @trusts_on = X.queries.trusts_on(@gmember, { order: "order_by_creation", group: @group })
-
-      #@tower = @gmember.query_tower_top_down
-      #@tower << @gmember if !@tower.empty? && !@tower.include?(@gmember)
-
-      if X.logged_in?(self)
-        @view_manager.show("action_link")
-      end
-      @view_manager.show("tower_of_trust_tab")
-      @view_manager.valid
     when "trust_history"
-      @gmember = X.queries.find_gmember!(params["gmember_id"])
-      @user = @gmember.member
-      @group = @gmember.group
+      @group = X.queries.find_group!(params["group_id"])
+      @user = X.queries.find_user!(params["user_id"])
+      @gmember = X.queries.find_gmember!(group: @group, member: @user)
+
       @trusts_of = X.queries.trusts_of({ gmember: @gmember, order: "order_by_creation" })
       @current_trust = @gmember.current_trust
 
-      if X.logged_in?(self)
-        @view_manager.show("action_link")
-      end
       @view_manager.show("trust_history_tab")
-      @view_manager.valid
     else fail
     end
+
+    if X.logged_in?(self)
+      @view_manager.show("action_link")
+      
+      if @user == current_user
+        @view_manager.show("your_profile_title")
+      else
+        @view_manager.show("somebody_profile_title")
+      end
+    end
+    @view_manager.valid
   end
 
   def show_group

@@ -80,16 +80,15 @@
             <table class="table">
               <thead>
                 <tr>
-                  <th><%= X.t("gmember") %></th>
+                  <th><%= X.t("user") %></th>
                   <th><%= X.t("tower_of_trust") %></th>
-                  <th scope="col"><%= X.t("profile_instance") %></th>
                 </tr>
               </thead>
               <tbody>
                 <% @gmembers.each do |gmember| %>
                   <tr>
                     <td>
-                      <%= link_to gmember.present("user"), X.path_for("show_gmember", { gmember: gmember }) %>
+                      <%= link_to gmember.member.present, X.path_for("show_user", { user: gmember.member }) %>
                     </td>
                     <% if gmember.tower  %>
                       <td bgcolor="<%= gmember.tower.color %>">
@@ -98,9 +97,6 @@
                     <% else %>
                       <td></td>
                     <% end %>
-                    <td>
-                      <%= link_to X.t("profile_instance"), X.path_for("show_user", { user: gmember.member }) %>
-                    </td>
                   </tr>
                 <% end %>
               </tbody>

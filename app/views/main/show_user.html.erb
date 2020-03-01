@@ -31,13 +31,21 @@
                 <%= X.t("moderating_groups") %>
               </a>
             </li>
+            <% if @view_manager.show?('trust_history_tab') %>
+              <li class="nav-item">
+                <a class="nav-link <%= 'active' %>"
+                   href="<%= X.path_for('show_user', { user: @user, group: @group, tab: 'trust_history' }) %>">
+                  <%= "#{X.t('trust_history')} - #{@group.present}" %>
+                </a>
+              </li>
+            <% end %>
           </ul>
           <% if @view_manager.show?('participating_groups_tab') %>
             <table class="table">
               <thead>
                 <tr>
                   <th scope="col"><%= X.t("group") %></th>
-                  <th><%= X.t("gmember") %></th>
+                  <th><%= X.t("trust_history") %></th>
                   <th><%= X.t("tower_of_trust") %></th>
                 </tr>
               </thead>
@@ -48,7 +56,7 @@
                       <%= link_to gmember.present("group"), X.path_for("show_group", { group: gmember.group }) %>
                     </td>
                     <td>
-                      <%= link_to gmember.present("user"), X.path_for("show_gmember", { gmember: gmember }) %>
+                      <%= link_to X.t("trust_history"), X.path_for("show_user", { user: gmember.member, group: gmember.group, tab: 'trust_history' }) %>
                     </td>
                     <% if gmember.tower  %>
                       <td bgcolor="<%= gmember.tower.color %>">
@@ -62,8 +70,32 @@
                 <% end %>
               </tbody>
             </table>
-          <% end %>
-          <% if @view_manager.show?('moderating_groups_tab') %>
+          <% elsif @view_manager.show?('trust_history_tab') %>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col"><%= X.t("name") %></th>
+                  <th><%= X.t("status") %></th>
+                  <th><%= X.t("on_date") %></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @trusts_of.each do |trust| %>
+                  <tr>
+                    <td>
+                      <%= link_to trust.trustee.present("user"), X.path_for("show_user", { user: trust.trustee.member }) %>
+                    </td>
+                    <td>
+                      <%= trust.present_status %>
+                    </td>
+                    <td>
+                      <%= trust.present_created_at %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          <% elsif @view_manager.show?('moderating_groups_tab') %>
             <% @moderating_groups.each do |group| %>
               <%= link_to group.present, X.path_for("show_group", { group: group }) %>
             <% end %>
