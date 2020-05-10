@@ -120,7 +120,7 @@ class X
   end
 
   def self.github_url
-    "https://github.com/hauska7/klub_dyskusyjny"
+    "https://github.com/hauska7/towers-of-trust"
   end
 
   def self.contact_email
@@ -183,14 +183,21 @@ class X
   end
 
   def self.generate_play_around_email
-    "#{Devise.friendly_token.first(8)}@klubdyskusyjny.com"
+    "#{Devise.friendly_token.first(8)}@towers-of-trust.com"
   end
 
-  def self.generate_tower_name
-    letters = ("A".."Z").to_a
-    result = ""
-    4.times { result << letters.sample }
-    result
+  def self.generate_tower_name(group)
+    towers = group.query("towers")
+    highest_number = towers.map(&:name).map do |name|
+       Integer(name)
+    rescue ArgumentError
+      nil
+    end
+      .compact
+      .max || 0
+    
+    result = highest_number + 1
+    result.to_s
   end
 
   def self.cast_flag(value)

@@ -1,6 +1,7 @@
 class Tower < ApplicationRecord
   belongs_to :owner, class_name: "GroupMembership"
   belongs_to :group
+  has_many :group_memberships
 
   validates :name, presence: true
 

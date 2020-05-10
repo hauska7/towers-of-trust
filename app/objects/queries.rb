@@ -59,7 +59,11 @@ class Queries
       end
     when "towers"
       if a.key?(:group)
-        Tower.where(group: a[:group]).to_a
+        if a[:empty]
+          Tower.where(group: a[:group]).left_outer_joins(:group_memberships).where(group_memberships: { id: nil }).to_a
+        else
+          Tower.where(group: a[:group]).to_a
+        end
       else fail
       end
     when "tower"

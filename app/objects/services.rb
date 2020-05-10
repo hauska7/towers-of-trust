@@ -21,7 +21,7 @@ class Services
         if top_gmember
           unless top_gmember.tower
             tower = X.factory.build("tower")
-            tower.set_name(X.generate_tower_name)
+            tower.set_name(X.generate_tower_name(group))
             tower.group = group
             tower.owner = top_gmember
             tower.save!
@@ -36,6 +36,9 @@ class Services
           gmember.save!
         end
       end
+
+      empty_towers = X.queries.query("towers", { group: group, empty: "true" })
+      empty_towers.each(&:destroy!)
     end
   end
 
@@ -146,6 +149,7 @@ class Services
       trust.save!
     end
 
+    gmember.tower_id = nil
     gmember.set_status_deleted
     gmember.save!
     self
